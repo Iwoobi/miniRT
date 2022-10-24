@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 17:46:21 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/24 17:53:04 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -989,6 +989,13 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 	mlx->data.cy = save;
 }
 
+void	normal_vector_pl(t_mlx *mlx, int i, int j)
+{
+	mlx->ray[i][j].n[0] = mlx->data.pl->nc[0];
+	mlx->ray[i][j].n[1] = mlx->data.pl->nc[1];
+	mlx->ray[i][j].n[2] = mlx->data.pl->nc[2];
+}
+
 void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 {
 	t_plane	*save;
@@ -998,7 +1005,14 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 	{
 		vector_size_one_pl(mlx);
 		if (check_hit_pl_d(d, mlx->data.pl->xc, mlx->data.pl->nc, mlx) == 1)
-			mlx->img.data[j * 1600 + i] = 0xFF0000;
+		{
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
+			{
+				mlx->ray[i][j].deep = mlx->t;
+				mlx->img.data[1600 * j + i] = color_select(mlx, PL);
+				normal_vector_pl(mlx, i, j);
+			}
+		}
 		mlx->data.pl = mlx->data.pl->next;
 	}
 	mlx->data.pl = save;
