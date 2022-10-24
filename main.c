@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 19:11:23 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 21:00:06 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -483,6 +483,27 @@ double	vector_size(double *x)
 	return (sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]));
 }
 
+void	vector_n(double *x, double val, double *result)
+{
+	result[0] = x[0] * val;
+	result[1] = x[1] * val;
+	result[2] = x[2] * val;
+}
+
+void	vector_plus(double *x, double *y, double *result)
+{
+	result[0] = x[0] + y[0];
+	result[1] = x[1] + y[1];
+	result[2] = x[2] + y[2];
+}
+
+void	vector_copy(double *x, double *copy)
+{
+	x[0] = copy[0];
+	x[1] = copy[1];
+	x[2] = copy[2];
+}
+
 void	normalize_vector(double *vec)
 {
 	double	size;
@@ -770,8 +791,8 @@ double	pow_2(double a)
 
 void	uv_axis_sp(double *d, t_mlx *mlx)
 {
-	double x[3];
-	double size;
+	double	x[3];
+	double	size;
 	
 	x[0] = mlx->t * d[0] - mlx->data.sp->cc[0];
 	x[1] = mlx->t * d[1] - mlx->data.sp->cc[1];
@@ -868,15 +889,14 @@ int	checker_borad(double *uv)
 void	normal_vector_sp(t_mlx *mlx, double	*d, int i, int j)
 {
 	double	x[3];
-	double	size;
 	
 	x[0] = d[0] * mlx->t - mlx->data.sp->cc[0];
 	x[1] = d[1] * mlx->t - mlx->data.sp->cc[1];
 	x[2] = d[2] * mlx->t - mlx->data.sp->cc[2];
-	size = vector_size(x);
-	mlx->ray[i][j].n[0] = x[0] / mlx->data.sp->cc[0];
-	mlx->ray[i][j].n[1] = x[1] / mlx->data.sp->cc[1];
-	mlx->ray[i][j].n[2] = x[2] / mlx->data.sp->cc[2];
+	normalize_vector(x);
+	mlx->ray[i][j].n[0] = x[0];
+	mlx->ray[i][j].n[1] = x[1];
+	mlx->ray[i][j].n[2] = x[2];
 }
 
 int	color_val(t_mlx *mlx, unsigned int *rgb, t_obj obj)
@@ -1064,18 +1084,18 @@ int	apply_color(unsigned int *rgb)
 	return (pow_2(256) * rgb[0] + 256 * rgb[1] + rgb[2]);
 }
 
-void	ambient_light(t_mlx *mlx, int i, int j, int *amb)
+void	ambient_light(t_mlx *mlx, int i, int j, unsigned int *amb)
 {
 	amb[0] = mlx->data.al->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio / 255;
 	amb[1] = mlx->data.al->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio / 255;
 	amb[2] = mlx->data.al->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio / 255;
 }
 
-void	diffuse_light(t_mlx *mlx, int i, int j, int *diff)
+void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff)
 {
-	double			d[3];
-	double			light[3];
-	double			res;
+	double	d[3];
+	double	light[3];
+	double	res;
 
 	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
 	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
@@ -1085,24 +1105,66 @@ void	diffuse_light(t_mlx *mlx, int i, int j, int *diff)
 	light[1] = mlx->data.l->xc[1] - d[1] * mlx->ray[i][j].deep;
 	light[2] = mlx->data.l->xc[2] - d[2] * mlx->ray[i][j].deep;
 	normalize_vector(light);
+	normalize_vector(mlx->ray[i][j].n);
 	res = inner_product(mlx->ray[i][j].n, light);
 	if (res < 0)
 		res = 0;
-	diff[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * res / 255;
-	diff[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * res / 255;
-	diff[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * res / 255;
+	diff[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * res * mlx->data.l->ratio / 255;
+	diff[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * res * mlx->data.l->ratio / 255;
+	diff[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * res * mlx->data.l->ratio / 255;
 }
 
-void	specular_light(t_mlx *mlx, int i, int j, int *spec)
+void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 {
-	spec[0] = mlx->data.al->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio / 255;
-	spec[1] = mlx->data.al->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio / 255;
-	spec[2] = mlx->data.al->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio / 255;
+	double	d[3];
+	double	light[3];
+	double	val;
+	double	n[3];
+
+	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
+	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
+	d[2] = 1;
+	normalize_vector(d);
+	vector_n(d, -mlx->ray[i][j].deep, n);
+	vector_plus(mlx->data.l->xc, n, light);
+	val = inner_product(light, mlx->ray[i][j].n);
+	vector_copy(n, mlx->ray[i][j].n);
+	vector_n(n, 2 * val, n);
+	vector_n(light, -1 , light);
+	vector_plus(n, light, light);
+	normalize_vector(light);
+	vector_n(d, -1, n);
+	val = inner_product(n, light);
+	if (val < 0.0000001)
+		val = 0;
+	val = pow(val, 50);
+	// spec[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio * val / 255;
+	// spec[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio * val / 255;
+	// spec[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio * val / 255;
+	spec[0] = 255 * val;
+	spec[1] = 255 * val;
+	spec[2] = 255 * val;
 }
 
-int	mix_color(unsigned int **phong)
+int	mix_color(unsigned int phong[3][3])
 {
-	return (1);
+	unsigned int	result[3];
+
+	result[0] = phong[0][0] + phong[1][0] + 0.5 * phong[2][0];
+	result[1] = phong[0][1] + phong[1][1] + 0.5 * phong[2][1];
+	result[2] = phong[0][2] + phong[1][2] + 0.5 * phong[2][2];
+	// result[0] = phong[2][0];
+	// result[1] = phong[2][1];
+	// result[2] = phong[2][2];
+
+	if (result[0] > 255)
+		result[0] = 255;
+	if (result[1] > 255)
+		result[1] = 255;
+	if (result[2] > 255)
+		result[2] = 255;
+	return (apply_color(result));
+
 }
 
 void	phong_point(t_mlx *mlx, int i, int j)
@@ -1115,19 +1177,7 @@ void	phong_point(t_mlx *mlx, int i, int j)
 	diffuse_light(mlx, i, j, phong[1]);
 	specular_light(mlx, i, j, phong[2]);
 	mlx->img.data[1600 * j + i] = mix_color(phong);
-	
 
-	/*
-	모든 칼럼을 vector_size로 나누면 normalize 크기가 1인 벡터가 됨
-	반사광 n벡터  mlx->ray[i][j].n[0] ~ n[2] 
-	max (내적 ((크기 1) 반사광 n벡터, (크기1)교점t에서 광원으로 이어지는 벡터), 0)
-	교점 t = d[0] * mlx->ray[i][j].deep, d[1] * mlx->ray[i][j]deep ~
-	광원 = mlx->data.l->x[0] ~x[2];
-	*/
-
-	/*빛
-	max(내적 (2n + (교점 t - 광원), t), 0) 
-	*/
 }
 
 void	phong_init(t_mlx *mlx)
@@ -1159,7 +1209,7 @@ int	loop_main(t_mlx *mlx)
 	// print_rot_data(rot_data);
 	exec_rot_data(mlx, rot);
 	canvas_match(mlx);
-	// phong_init(mlx);
+	phong_init(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img.img, 0, 0);
 	return (0);
 }
