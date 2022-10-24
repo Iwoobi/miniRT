@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/21 17:27:33 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 18:35:10 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,9 @@ typedef struct s_mdata
 
 typedef struct s_ray
 {
-	double	n[3];
-	double	deep;
+	double			n[3];
+	double			deep;
+	unsigned int	rgb[3];
 }	t_ray;
 
 typedef struct s_mlx

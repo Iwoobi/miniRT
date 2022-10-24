@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 17:53:04 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 18:43:39 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ void	push_c(char *str, t_mlx *mlx)
 
 	save = mlx->data.cam;
 	count = 0;
-	str += 2;
+	str += 1;
 	while (mlx->data.count_cam > count)
 	{
 		if (mlx->data.count_cam - count == 1)
@@ -852,26 +852,6 @@ int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	return (0);
 }
 
-void	vector_size_one_cy(t_mlx *mlx)
-{
-	double	size;
-
-	size = vector_size(mlx->data.cy->nc);
-	mlx->data.cy->nc[0] /= size;
-	mlx->data.cy->nc[1] /= size;
-	mlx->data.cy->nc[2] /= size;
-}
-
-void	vector_size_one_pl(t_mlx *mlx)
-{
-	double	size;
-
-	size = vector_size(mlx->data.pl->nc);
-	mlx->data.pl->nc[0] /= size;
-	mlx->data.pl->nc[1] /= size;
-	mlx->data.pl->nc[2] /= size;
-}
-
 int	checker_borad(double *uv)
 {
 	int	i;
@@ -899,21 +879,30 @@ void	normal_vector_sp(t_mlx *mlx, double	*d, int i, int j)
 	mlx->ray[i][j].n[2] = x[2] / mlx->data.sp->cc[2];
 }
 
-int	color_val(t_mlx *mlx, t_obj obj)
+int	color_val(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 {
 	if (obj == PL)
-		return (pow_2(256) * mlx->data.pl->rgb[0]
-		+ 256 * mlx->data.pl->rgb[1] + mlx->data.pl->rgb[2]);
+	{
+		rgb[0] = mlx->data.pl->rgb[0];
+		rgb[1] = mlx->data.pl->rgb[1];
+		rgb[2] = mlx->data.pl->rgb[2];
+	}
 	else if (obj == CY)
-		return (pow_2(256) * mlx->data.cy->rgb[0]
-		+ 256 * mlx->data.cy->rgb[1] + mlx->data.cy->rgb[2]);
+	{
+		rgb[0] = mlx->data.cy->rgb[0];
+		rgb[1] = mlx->data.cy->rgb[1];
+		rgb[2] = mlx->data.cy->rgb[2];
+	}
 	else if (obj == SP)
-		return (pow_2(256) * mlx->data.sp->rgb[0]
-		+ 256 * mlx->data.sp->rgb[1] + mlx->data.sp->rgb[2]);
+	{
+		rgb[0] = mlx->data.sp->rgb[0];
+		rgb[1] = mlx->data.sp->rgb[1];
+		rgb[2] = mlx->data.sp->rgb[2];
+	}
 	return (-1);
 }
 
-int	color_select(t_mlx *mlx, t_obj obj)
+int	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 {
 	if (obj == PL)
 	{
@@ -930,7 +919,7 @@ int	color_select(t_mlx *mlx, t_obj obj)
 		if (mlx->data.sp->checker == 1)
 			return (checker_borad(mlx->data.sp->u));
 	}
-	return (color_val(mlx, obj));
+	return (color_val(mlx, rgb, obj));
 }
 
 void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
@@ -945,7 +934,7 @@ void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
 			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
 				mlx->ray[i][j].deep = mlx->t;
-				mlx->img.data[1600 * j + i] = color_select(mlx, SP);
+				color_select(mlx, mlx->ray[i][j].rgb, SP);
 				normal_vector_sp(mlx, d, i, j);
 			}
 		}
@@ -974,13 +963,13 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 	save = mlx->data.cy;
 	while (mlx->data.cy != NULL)
 	{
-		vector_size_one_cy(mlx);
+		normalize_vector(mlx->data.cy->nc);
 		if (check_hit_cy_d(d, mlx->data.cy->nc, mlx->data.cy->cc, mlx) == 1)
 		{
 			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
 				mlx->ray[i][j].deep = mlx->t;
-				mlx->img.data[1600 * j + i] = color_select(mlx, CY);
+				color_select(mlx, mlx->ray[i][j].rgb, CY);
 				normal_vector_cy(mlx, d, i, j);
 			}
 		}
@@ -1003,13 +992,13 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 	save = mlx->data.pl;
 	while (mlx->data.pl != NULL)
 	{
-		vector_size_one_pl(mlx);
+		normalize_vector(mlx->data.pl->nc);
 		if (check_hit_pl_d(d, mlx->data.pl->xc, mlx->data.pl->nc, mlx) == 1)
 		{
 			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
 				mlx->ray[i][j].deep = mlx->t;
-				mlx->img.data[1600 * j + i] = color_select(mlx, PL);
+				color_select(mlx, mlx->ray[i][j].rgb, PL);
 				normal_vector_pl(mlx, i, j);
 			}
 		}
@@ -1070,53 +1059,53 @@ void	exec_rot_data(t_mlx *mlx, t_mdata mdata)
 	updata_rot(mlx, mdata);
 }
 
-void	ambient_light(t_mlx *mlx, int i, int j)
-{
+// void	ambient_light(t_mlx *mlx, int i, int j)
+// {
 	
-}
+// }
 
-void	phong_point(t_mlx *mlx, int i, int j)
-{
-	double	d[3];
+// void	phong_point(t_mlx *mlx, int i, int j)
+// {
+// 	double	d[3];
 
-	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
-	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
-	d[2] = 1;
-	normalize_vector(d);
-	/*주변광 + 반사광 + 빛*/
-	/*주변광 원래색 * 주변광색 / 255 * 세기*/
-	ambient_light(mlx, i, j);
+// 	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
+// 	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
+// 	d[2] = 1;
+// 	normalize_vector(d);
+// 	/*주변광 + 반사광 + 빛*/
+// 	/*주변광 원래색 * 주변광색 / 255 * 세기*/
+// 	ambient_light(mlx, i, j);
 
-	/*
-	모든 칼럼을 vector_size로 나누면 normalize 크기가 1인 벡터가 됨
-	반사광 n벡터  mlx->ray[i][j].n[0] ~ n[2] 
-	max (내적 ((크기 1) 반사광 n벡터, (크기1)교점t에서 광원으로 이어지는 벡터), 0)
-	교점 t = d[0] * mlx->ray[i][j].deep, d[1] * mlx->ray[i][j]deep ~
-	광원 = mlx->data.l->x[0] ~x[2];
-	*/
+// 	/*
+// 	모든 칼럼을 vector_size로 나누면 normalize 크기가 1인 벡터가 됨
+// 	반사광 n벡터  mlx->ray[i][j].n[0] ~ n[2] 
+// 	max (내적 ((크기 1) 반사광 n벡터, (크기1)교점t에서 광원으로 이어지는 벡터), 0)
+// 	교점 t = d[0] * mlx->ray[i][j].deep, d[1] * mlx->ray[i][j]deep ~
+// 	광원 = mlx->data.l->x[0] ~x[2];
+// 	*/
 
-	/*빛
-	max(내적 (2n + (교점 t - 광원), t), 0) 
-	*/
-}
+// 	/*빛
+// 	max(내적 (2n + (교점 t - 광원), t), 0) 
+// 	*/
+// }
 
-void	phong_init(t_mlx *mlx)
-{
-	int	i;
-	int	j;
+// void	phong_init(t_mlx *mlx)
+// {
+// 	int	i;
+// 	int	j;
 
-	i = 0;
-	while (i < 1600)
-	{
-		j = 0;
-		while (j < 900)
-		{
-			phong_point(mlx, i, j);
-			j++;
-		}
-		i++;
-	}
-}
+// 	i = 0;
+// 	while (i < 1600)
+// 	{
+// 		j = 0;
+// 		while (j < 900)
+// 		{
+// 			phong_point(mlx, i, j);
+// 			j++;
+// 		}
+// 		i++;
+// 	}
+// }
 
 int	loop_main(t_mlx *mlx)
 {
@@ -1129,7 +1118,7 @@ int	loop_main(t_mlx *mlx)
 	// print_rot_data(rot_data);
 	exec_rot_data(mlx, rot);
 	canvas_match(mlx);
-	phong_init(mlx);
+	// phong_init(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img.img, 0, 0);
 	return (0);
 }
