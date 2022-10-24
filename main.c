@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 21:00:06 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 22:47:33 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -844,15 +844,54 @@ int	check_hit_pl_d(double *d, double *x, double *n, t_mlx *mlx)
 	return (1);
 }
 
+void	check_hit_top_cy_d(double *d, double *n, double *c, t_mlx *mlx)
+{
+	double	l[3];
+	double	vec[3];
+	double	t;
 
-int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
+	vector_n(n, mlx->data.cy->h, l);
+	vector_plus(l, c, l);
+	t = inner_product(n, l) / inner_product(d, n);
+	vector_n(d, -t, vec);
+	vector_plus(vec, l, vec);
+	if (vector_size(vec) < mlx->data.cy->r)
+	{
+		if (mlx->t < 0 || mlx->t > t)
+		{
+			mlx->t = t;
+			mlx->flag = 3;
+		}
+	}
+
+}
+
+void	check_hit_bot_cy_d(double *d, double *n, double *c, t_mlx *mlx)
+{
+	double	t;
+	double	vec[3];
+
+	t = inner_product(n, c) / inner_product(d, n);
+	vector_n(d, -t, vec);
+	vector_plus(vec, c, vec);
+	if (vector_size(vec) < mlx->data.cy->r)
+	{
+		if (mlx->t < 0 || mlx->t > t)
+		{
+			mlx->t = t;
+			mlx->flag = 2;
+		}
+	}
+}
+
+int	check_hit_side_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 {
 	double	a;
 	double	result1[3];
 	double	result2[3];
 	double	r;
 
-	r = mlx->data.cy-> r;
+	r = mlx->data.cy->r;
 	cross_product(c, n, result1);
 	cross_product(d, n, result2);
 	a = pow_2(inner_product(result1, result2))
@@ -861,16 +900,25 @@ int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	{
 		mlx->t = (inner_product(result1, result2) - sqrt(a)) / pow_2(vector_size(result2));
 		if (inner_product(d, n) * mlx->t - inner_product(c, n) <= mlx->data.cy->h)
-
 		{
 			if (inner_product(d, n) * mlx->t - inner_product(c, n) >= 0)
+			{
+				mlx->flag = 1;
 				return (1);
+			}
 		}
 		mlx->t = -2;
-		return (0);
 	}
-	mlx->t = -2;
 	return (0);
+}
+
+int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
+{
+	mlx->flag = 0;
+	check_hit_side_cy_d(d, n, c, mlx);
+	check_hit_bot_cy_d(d, n, c, mlx);
+	check_hit_top_cy_d(d, n, c, mlx);
+	return (mlx->flag);
 }
 
 int	checker_borad(double *uv)
@@ -963,18 +1011,39 @@ void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
 	mlx->data.sp = save;
 }
 
+void	normal_vector_top_cy(t_mlx *mlx, int i, int j)
+{
+	vector_copy(mlx->ray[i][j].n, mlx->data.cy->nc);
+}
+
+void	normal_vector_bot_cy(t_mlx *mlx, int i, int j)
+{
+	double	vec[3];
+
+	vector_n(mlx->data.cy->nc, -1, vec);
+	vector_copy(mlx->ray[i][j].n, vec);
+}
+
 void	normal_vector_cy(t_mlx *mlx, double	*d, int i, int j)
 {
 	double	x[3];
+	double	c[3];
 	
-	x[0] = d[0] * mlx->t - mlx->data.cy->cc[0];
-	x[1] = d[1] * mlx->t - mlx->data.cy->cc[1];
-	x[2] = d[2] * mlx->t - mlx->data.cy->cc[2];
-	inner_product(x, mlx->data.cy->nc);
-
-	mlx->ray[i][j].n[0] = x[0] / mlx->data.cy->cc[0];
-	mlx->ray[i][j].n[1] = x[1] / mlx->data.cy->cc[1];
-	mlx->ray[i][j].n[2] = x[2] / mlx->data.cy->cc[2];
+	if (mlx->flag == 3)
+		normal_vector_top_cy(mlx, i, j);
+	else if (mlx->flag == 2)
+		normal_vector_bot_cy(mlx, i, j);
+	else if (mlx->flag == 1)
+	{
+		vector_n(d, mlx->ray[i][j].deep, x);
+		vector_n(mlx->data.cy->cc, -1, c);
+		vector_plus(x, c, x);
+		normalize_vector(mlx->data.cy->nc);
+		vector_n(mlx->data.cy->nc, -inner_product(x, mlx->data.cy->nc), c);
+		vector_plus(x, c, x);
+		normalize_vector(x);
+		vector_copy(mlx->ray[i][j].n, x);
+	}
 }
 void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 {
@@ -984,7 +1053,7 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 	while (mlx->data.cy != NULL)
 	{
 		normalize_vector(mlx->data.cy->nc);
-		if (check_hit_cy_d(d, mlx->data.cy->nc, mlx->data.cy->cc, mlx) == 1)
+		if (check_hit_cy_d(d, mlx->data.cy->nc, mlx->data.cy->cc, mlx) != 0)
 		{
 			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
@@ -1000,9 +1069,7 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 
 void	normal_vector_pl(t_mlx *mlx, int i, int j)
 {
-	mlx->ray[i][j].n[0] = mlx->data.pl->nc[0];
-	mlx->ray[i][j].n[1] = mlx->data.pl->nc[1];
-	mlx->ray[i][j].n[2] = mlx->data.pl->nc[2];
+	vector_copy(mlx->ray[i][j].n, mlx->data.pl->nc);
 }
 
 void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
@@ -1015,7 +1082,7 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 		normalize_vector(mlx->data.pl->nc);
 		if (check_hit_pl_d(d, mlx->data.pl->xc, mlx->data.pl->nc, mlx) == 1)
 		{
-			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < -0.00000001)
 			{
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, PL);

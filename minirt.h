@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 19:11:23 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 22:16:42 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ typedef struct s_mlx
 	int		size[2];
 	int		cam_num;
 	double	t;
+	int		flag;
 }	t_mlx;
 
 typedef struct s_vector
