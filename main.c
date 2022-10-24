@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/21 21:44:54 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 17:05:36 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,7 +335,7 @@ void	check_obj(char *str, t_mlx *mlx)
 {
 	if (div_str(str, "A") == 1)
 		push_a(str, mlx);
-	else if (div_str(str, "c") == 1)
+	else if (div_str(str, "C") == 1)
 		push_c(str, mlx);
 	else if (div_str(str, "L") == 1)
 		push_l(str, mlx);
@@ -782,7 +782,7 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 
 	r = mlx->data.sp->r;
 	a = pow_2(inner_product(d, c)) - pow_2(vector_size(d)) * (pow_2(vector_size(c)) - r * r);
-	if (a >= 0)
+	if (a >= 0.00000001)
 	{
 		mlx->t = (inner_product(d, c) - sqrt(a)) / pow_2(vector_size(d));
 		if (mlx->t < 0)
@@ -830,6 +830,7 @@ int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	{
 		mlx->t = (inner_product(result1, result2) - sqrt(a)) / pow_2(vector_size(result2));
 		if (inner_product(d, n) * mlx->t - inner_product(c, n) <= mlx->data.cy->h)
+
 		{
 			if (inner_product(d, n) * mlx->t - inner_product(c, n) >= 0)
 				return (1);
@@ -993,15 +994,20 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 	mlx->data.pl = save;
 }
 
+double deg_to_rad(double degree)
+{
+	return (degree * M_PI / 180);
+}
+
 
 void	hit_point(t_mlx *mlx, int i, int j)
 {
 	double	d[3];
 	double	size;
 
-	d[0] = 2 * (double)i * tan(mlx->data.cam->fov / 2) / 1599 - tan(mlx->data.cam->fov / 2);
-	d[1] = 9 * (2 * (double)j * tan(mlx->data.cam->fov / 2) / 899 - tan(mlx->data.cam->fov / 2))/16;
-	d[2] = 0.1;
+	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
+	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
+	d[2] = 1;
 	size = vector_size(d);
 	d[0] = d[0] / size;
 	d[1] = d[1] / size;
@@ -1040,6 +1046,51 @@ void	exec_rot_data(t_mlx *mlx, t_mdata mdata)
 	updata_rot(mlx, mdata);
 }
 
+void	phong_point(t_mlx *mlx, int i, int j)
+{
+	double	d[3];
+	double	size;
+
+	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
+	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
+	d[2] = 1;
+	size = vector_size(d);
+	d[0] = d[0] / size;
+	d[1] = d[1] / size;
+	d[2] = d[2] / size;
+	/*주변광 + 반사광 + 빛*/
+	/*주변광 원래색 * 주변광색 / 255 * 세기*/
+
+	/*
+	반사광 n벡터  mlx->ray[i][j].n[0] ~ n[2] 
+	max (내적 ((크기 1) 반사광 n벡터, (크기1)교점t에서 광원으로 이어지는 벡터), 0)
+	교점 t = d[0] * mlx->ray[i][j].deep + d[1] * mlx->ray[i][j]deep ~
+	광원 = mlx->data.l->x[0] ~x[2];
+	*/
+
+	/*빛
+	max(내적 (2n + (교점 t - 광원), t), 0) 
+	*/
+}
+
+void	phong_init(t_mlx *mlx)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < 1600)
+	{
+		j = 0;
+		while (j < 900)
+		{
+			phong_point(mlx, i, j);
+			j++;
+		}
+		i++;
+	}
+}
+
 int	loop_main(t_mlx *mlx)
 {
 	t_mdata	rot;
@@ -1051,6 +1102,7 @@ int	loop_main(t_mlx *mlx)
 	// print_rot_data(rot_data);
 	exec_rot_data(mlx, rot);
 	canvas_match(mlx);
+	phong_init(mlx);
 	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img.img, 0, 0);
 	return (0);
 }
