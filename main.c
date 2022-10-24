@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 17:53:04 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 19:06:20 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1070,22 +1070,63 @@ void	exec_rot_data(t_mlx *mlx, t_mdata mdata)
 	updata_rot(mlx, mdata);
 }
 
-void	ambient_light(t_mlx *mlx, int i, int j)
+int	apply_color(unsigned int *rgb)
 {
-	
+	return (pow_2(256) * rgb[0] + 256 * rgb[1] + rgb[2]);
 }
 
-void	phong_point(t_mlx *mlx, int i, int j)
+void	ambient_light(t_mlx *mlx, int i, int j, int *amb)
 {
-	double	d[3];
+	amb[0] = mlx->data.al->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio / 255;
+	amb[1] = mlx->data.al->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio / 255;
+	amb[2] = mlx->data.al->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio / 255;
+}
+
+void	diffuse_light(t_mlx *mlx, int i, int j, int *diff)
+{
+	double			d[3];
+	double			light[3];
+	double			res;
 
 	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
 	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
 	d[2] = 1;
 	normalize_vector(d);
+	light[0] = mlx->data.l->xc[0] - d[0] * mlx->ray[i][j].deep;
+	light[1] = mlx->data.l->xc[1] - d[1] * mlx->ray[i][j].deep;
+	light[2] = mlx->data.l->xc[2] - d[2] * mlx->ray[i][j].deep;
+	normalize_vector(light);
+	res = inner_product(mlx->ray[i][j].n, light);
+	if (res < 0)
+		res = 0;
+	diff[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * res / 255;
+	diff[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * res / 255;
+	diff[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * res / 255;
+}
+
+void	specular_light(t_mlx *mlx, int i, int j, int *spec)
+{
+	spec[0] = mlx->data.al->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio / 255;
+	spec[1] = mlx->data.al->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio / 255;
+	spec[2] = mlx->data.al->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio / 255;
+}
+
+int	mix_color(unsigned int **phong)
+{
+	return (1);
+}
+
+void	phong_point(t_mlx *mlx, int i, int j)
+{
+	unsigned int	phong[3][3];
+	
 	/*주변광 + 반사광 + 빛*/
 	/*주변광 원래색 * 주변광색 / 255 * 세기*/
-	ambient_light(mlx, i, j);
+	ambient_light(mlx, i, j, phong[0]);
+	diffuse_light(mlx, i, j, phong[1]);
+	specular_light(mlx, i, j, phong[2]);
+	mlx->img.data[1600 * j + i] = mix_color(phong);
+	
 
 	/*
 	모든 칼럼을 vector_size로 나누면 normalize 크기가 1인 벡터가 됨
