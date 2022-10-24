@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 17:05:36 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/24 17:46:21 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -481,6 +481,16 @@ double	vector_size(double *x)
 	// if (sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]) == 0)
 	// 	return (1);
 	return (sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]));
+}
+
+void	normalize_vector(double *vec)
+{
+	double	size;
+
+	size = vector_size(vec);
+	vec[0] /= size;
+	vec[1] /= size;
+	vec[2] /= size;
 }
 
 void	 rot_matrix(double *x, double *y, double *z, double *result)
@@ -1046,25 +1056,28 @@ void	exec_rot_data(t_mlx *mlx, t_mdata mdata)
 	updata_rot(mlx, mdata);
 }
 
+void	ambient_light(t_mlx *mlx, int i, int j)
+{
+	
+}
+
 void	phong_point(t_mlx *mlx, int i, int j)
 {
 	double	d[3];
-	double	size;
 
 	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
 	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
 	d[2] = 1;
-	size = vector_size(d);
-	d[0] = d[0] / size;
-	d[1] = d[1] / size;
-	d[2] = d[2] / size;
+	normalize_vector(d);
 	/*주변광 + 반사광 + 빛*/
 	/*주변광 원래색 * 주변광색 / 255 * 세기*/
+	ambient_light(mlx, i, j);
 
 	/*
+	모든 칼럼을 vector_size로 나누면 normalize 크기가 1인 벡터가 됨
 	반사광 n벡터  mlx->ray[i][j].n[0] ~ n[2] 
 	max (내적 ((크기 1) 반사광 n벡터, (크기1)교점t에서 광원으로 이어지는 벡터), 0)
-	교점 t = d[0] * mlx->ray[i][j].deep + d[1] * mlx->ray[i][j]deep ~
+	교점 t = d[0] * mlx->ray[i][j].deep, d[1] * mlx->ray[i][j]deep ~
 	광원 = mlx->data.l->x[0] ~x[2];
 	*/
 
