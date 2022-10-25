@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 21:34:46 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/25 22:27:06 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ void	push_x_y_z(double *data, char **str)
 	}
 }
 
-int	push_rgb(unsigned char *rgb, char **str)
+int	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 {
 	int	i;
 	int	count;
@@ -122,6 +122,22 @@ int	push_rgb(unsigned char *rgb, char **str)
 	if (div_str(*str, "checker") == 1)
 	{
 		*str += 7;
+		return (1);
+	}
+	if (div_str(*str, "bump") == 1)
+	{
+		*str += 4;
+		while (**str == ' ' || **str == '\t')
+			(*str)++;
+		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, *str, &(mlx->xpm.w), &(mlx->xpm.h));
+		if (mlx->xpm.img == NULL)
+		{
+			print_error("couldn't open xpm file.");
+			return (0);
+		}
+		mlx->xpm.data = (int *)mlx_get_data_addr(mlx->xpm.img, &mlx->xpm.bpp, &mlx->xpm.size_l, &mlx->xpm.endian);
+		while (**str != '\n')
+			(*str)++;
 		return (1);
 	}
 	while (i < 3)
@@ -173,7 +189,7 @@ void	push_a(char *str, t_mlx *mlx)
 	mlx->data.count_al += 1;
 	mlx->data.al->ratio = ft_char_double(str, &count);
 	str += count;
-	push_rgb(&(mlx->data.al->rgb[0]), &str);
+	push_rgb(&(mlx->data.al->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.al = save;
 }
@@ -233,7 +249,7 @@ void	push_l(char *str, t_mlx *mlx)
 	push_x_y_z(&(mlx->data.l->x[0]), &str);
 	mlx->data.l->ratio = ft_char_double(str, &count);
 	str += count;
-	push_rgb(&(mlx->data.l->rgb[0]), &str);
+	push_rgb(&(mlx->data.l->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.l = save;
 }
@@ -263,7 +279,7 @@ void	push_sp(char *str, t_mlx *mlx)
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
 	mlx->data.sp->r = ft_char_double(str, &count);
 	str += count;
-	mlx->data.sp->checker = push_rgb(&(mlx->data.sp->rgb[0]), &str);
+	mlx->data.sp->checker = push_rgb(&(mlx->data.sp->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.sp = save;
 }
@@ -292,7 +308,7 @@ void	push_pl(char *str, t_mlx *mlx)
 	mlx->data.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
 	push_x_y_z(&(mlx->data.pl->n[0]), &str);
-	mlx->data.pl->checker = push_rgb(&(mlx->data.pl->rgb[0]), &str);
+	mlx->data.pl->checker = push_rgb(&(mlx->data.pl->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.pl = save;
 }
@@ -326,7 +342,7 @@ void	push_cy(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.cy->h = ft_char_double(str, &count);
 	str += count;
-	mlx->data.cy->checker = push_rgb(&(mlx->data.cy->rgb[0]), &str);
+	mlx->data.cy->checker = push_rgb(&(mlx->data.cy->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.cy = save;
 }
@@ -420,8 +436,8 @@ void	init_mlx_data(t_mlx *mlx)
 	int	i;
 	mlx->size[0] = 1600;
 	mlx->size[1] = 900;
-
 	mlx->cam_num = 0;
+	mlx->xpm.img = NULL;
 	mlx->data.count_l = 0;
 	mlx->data.count_al = 0;
 	mlx->data.count_cam = 0;
@@ -985,6 +1001,25 @@ int	color_val(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 	return (-1);
 }
 
+void	hex_to_rgb(int hex, unsigned int *rgb)
+{
+	rgb[2] = hex % 256;
+	hex /= 256;
+	rgb[1] = hex % 256;
+	hex /= 256;
+	rgb[0] = hex;
+}
+
+void	xpm_color_select(t_mlx *mlx, unsigned int *rgb)
+{
+	double	i;
+	double	j;
+
+	i = (mlx->data.sp->u[0] * 6) / (M_PI);
+	j = (mlx->data.sp->u[1] * 6) / (M_PI);
+	hex_to_rgb(mlx->xpm.data[(int)(i * mlx->xpm.w / 2) + (int)(mlx->xpm.w * j * mlx->xpm.h / 2)], rgb);
+}
+
 void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 {
 	color_val(mlx, rgb, obj);
@@ -1002,6 +1037,8 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 	{
 		if (mlx->data.sp->checker == 1)
 			checker_borad(mlx->data.sp->u, rgb);
+		if (mlx->xpm.img != NULL)
+			xpm_color_select(mlx);
 	}
 }
 
