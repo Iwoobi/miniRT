@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 22:16:42 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/25 20:17:57 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ typedef struct s_ray
 {
 	double			n[3];
 	double			deep;
+	double			dot[3];
+	double			d[3];
 	unsigned int	rgb[3];
 }	t_ray;
 

@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 22:47:33 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/25 21:34:46 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -497,6 +497,13 @@ void	vector_plus(double *x, double *y, double *result)
 	result[2] = x[2] + y[2];
 }
 
+void	vector_minus(double *x, double *y, double *result)
+{
+	result[0] = x[0] - y[0];
+	result[1] = x[1] - y[1];
+	result[2] = x[2] - y[2];
+}
+
 void	vector_copy(double *x, double *copy)
 {
 	x[0] = copy[0];
@@ -797,7 +804,6 @@ void	uv_axis_sp(double *d, t_mlx *mlx)
 	x[0] = mlx->t * d[0] - mlx->data.sp->cc[0];
 	x[1] = mlx->t * d[1] - mlx->data.sp->cc[1];
 	x[2] = mlx->t * d[2] - mlx->data.sp->cc[2];
-
 	size = vector_size(x);
 	x[0] /= size;
 	x[1] /= size;
@@ -825,6 +831,7 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 			uv_axis_sp(d, mlx);
 		return (1);
 	}
+	mlx->t = -2;
 	return (0);
 }
 
@@ -921,7 +928,7 @@ int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	return (mlx->flag);
 }
 
-int	checker_borad(double *uv)
+void	checker_borad(double *uv, unsigned int *rgb)
 {
 	int	i;
 	int	j;
@@ -929,9 +936,17 @@ int	checker_borad(double *uv)
 	i = (uv[0] * 6) / (M_PI);
 	j = (uv[1] * 6) / (M_PI);
 	if ((i + j) % 2 == 1)
-		return (0);
+	{
+		rgb[0] = 0;
+		rgb[1] = 0;
+		rgb[2] = 0;
+	}
 	else
-		return (16*16*16*16 * 255 + 16*16* 255 + 255);
+	{
+		rgb[0] = 255;
+		rgb[1] = 255;
+		rgb[2] = 255;
+	}
 }
 
 void	normal_vector_sp(t_mlx *mlx, double	*d, int i, int j)
@@ -970,24 +985,24 @@ int	color_val(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 	return (-1);
 }
 
-int	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
+void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 {
+	color_val(mlx, rgb, obj);
 	if (obj == PL)
 	{
 		if (mlx->data.pl->checker == 1)
-			return (checker_borad(mlx->data.pl->u));
+			checker_borad(mlx->data.pl->u, rgb);
 	}
 	else if (obj == CY)
 	{
 		if (mlx->data.cy->checker == 1)
-			return (checker_borad(mlx->data.cy->u));
+			checker_borad(mlx->data.cy->u, rgb);
 	}
 	else if (obj == SP)
 	{
 		if (mlx->data.sp->checker == 1)
-			return (checker_borad(mlx->data.sp->u));
+			checker_borad(mlx->data.sp->u, rgb);
 	}
-	return (color_val(mlx, rgb, obj));
 }
 
 void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
@@ -1103,15 +1118,14 @@ double deg_to_rad(double degree)
 void	hit_point(t_mlx *mlx, int i, int j)
 {
 	double	d[3];
-	double	size;
 
 	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
 	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
 	d[2] = 1;
-	size = vector_size(d);
-	d[0] = d[0] / size;
-	d[1] = d[1] / size;
-	d[2] = d[2] / size;
+	normalize_vector(d);
+	mlx->ray[i][j].d[0] = d[0];
+	mlx->ray[i][j].d[1] = d[1];
+	mlx->ray[i][j].d[2] = d[2];
 	check_hit_sp(mlx, d, i, j);
 	check_hit_cy(mlx, d, i, j);
 	check_hit_pl(mlx, d, i, j);
@@ -1160,19 +1174,11 @@ void	ambient_light(t_mlx *mlx, int i, int j, unsigned int *amb)
 
 void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff)
 {
-	double	d[3];
 	double	light[3];
 	double	res;
 
-	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
-	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
-	d[2] = 1;
-	normalize_vector(d);
-	light[0] = mlx->data.l->xc[0] - d[0] * mlx->ray[i][j].deep;
-	light[1] = mlx->data.l->xc[1] - d[1] * mlx->ray[i][j].deep;
-	light[2] = mlx->data.l->xc[2] - d[2] * mlx->ray[i][j].deep;
+	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
 	normalize_vector(light);
-	normalize_vector(mlx->ray[i][j].n);
 	res = inner_product(mlx->ray[i][j].n, light);
 	if (res < 0)
 		res = 0;
@@ -1183,28 +1189,20 @@ void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff)
 
 void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 {
-	double	d[3];
 	double	light[3];
 	double	val;
 	double	n[3];
 
-	d[0] = 2 * (double)i * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 1599 - tan(deg_to_rad(mlx->data.cam->fov) / 2);
-	d[1] = 9 * (2 * (double)j * tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899 - tan(deg_to_rad(mlx->data.cam->fov) / 2))/16;
-	d[2] = 1;
-	normalize_vector(d);
-	vector_n(d, -mlx->ray[i][j].deep, n);
-	vector_plus(mlx->data.l->xc, n, light);
+	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
 	val = inner_product(light, mlx->ray[i][j].n);
-	vector_copy(n, mlx->ray[i][j].n);
-	vector_n(n, 2 * val, n);
-	vector_n(light, -1 , light);
-	vector_plus(n, light, light);
+	vector_n(mlx->ray[i][j].n, 2 * val, n);
+	vector_minus(n, light, light);
 	normalize_vector(light);
-	vector_n(d, -1, n);
+	vector_n(mlx->ray[i][j].d, -1, n);
 	val = inner_product(n, light);
 	if (val < 0.0000001)
 		val = 0;
-	val = pow(val, 50);
+	val = pow(val, 10);
 	// spec[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio * val / 255;
 	// spec[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio * val / 255;
 	// spec[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio * val / 255;
@@ -1234,17 +1232,160 @@ int	mix_color(unsigned int phong[3][3])
 
 }
 
+void	reset_phong_light(unsigned int phong[3][3])
+{
+	phong[1][0] = 0;
+	phong[1][1] = 0;
+	phong[1][2] = 0;
+	phong[2][0] = 0;
+	phong[2][1] = 0;
+	phong[2][2] = 0;
+}
+
+int	check_hit_gray_sp_d(double *d, double *dot, t_mlx *mlx)
+{
+	double	a;
+	double	a1;
+	double	a2;
+	double	a3;
+	double	r;
+	double	t;
+	double	c[3];
+	double	result1;
+	double	result2;
+
+	if (vector_size(d) == 0)
+		return (0);
+	vector_copy(c, mlx->data.sp->cc);
+	r = mlx->data.sp->r;
+	result1 = inner_product(d, dot);
+	result2 = inner_product(c, d);
+	a1 = pow_2(vector_size(d));
+	a2 = 2 * (result1 - result2);
+	a3 = pow_2(vector_size(dot)) + pow_2(vector_size(c)) - r*r -2*inner_product(c, dot);
+	a = pow_2(a1) - 4* a2 *a3;
+	// a = pow_2(result1 - result2) - pow_2(vector_size(d)) * (pow_2(vector_size(dot)) + pow_2(vector_size(c)) - r * r - 2 * inner_product(c, dot));
+	if (a >= 0.00000001)
+	{
+		// t = (result2 - result1 - sqrt(a)) / pow_2(vector_size(d));
+		t = (-1 * a2 - sqrt(a))/2 * pow_2(a1);
+		if (t < 0.001)
+			return (0);
+		return (1);
+	}
+	return (0);
+
+}
+
+int	check_hit_gray_sp(t_mlx *mlx, int i, int j)
+{
+	t_sphere	*save;
+	double	light[3];
+
+	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
+	normalize_vector(light);
+	save = mlx->data.sp;
+	while (mlx->data.sp != NULL)
+	{
+		if (check_hit_gray_sp_d(light, mlx->ray[i][j].dot, mlx) == 1)
+		{
+			mlx->data.sp = save;	
+			return (1);
+		}
+		mlx->data.sp = mlx->data.sp->next;
+	}
+	mlx->data.sp = save;
+	return (0);
+}
+
+// int	check_hit_gray_cy_d(double *d, double *dot, t_mlx *mlx)
+// {
+
+// }
+
+// int	check_hit_gray_cy(t_mlx *mlx, int i, int j)
+// {
+// 	t_cylinder	*save;
+// 	double		light[3];
+
+// 	vector_minus(mlx->data.l->xc, mlx->ray[i][j].t, light);
+// 	normalize_vector(light);
+// 	save = mlx->data.cy;
+// 	while (mlx->data.cy != NULL)
+// 	{
+// 		if (check_hit_gray_cy_d(light, mlx->ray[i][j].t, mlx) == 1)
+// 			return (1);
+// 		mlx->data.cy = mlx->data.cy->next;
+// 	}
+// 	mlx->data.cy = save;
+// 	return (0);
+// }
+
+int	check_hit_gray_pl_d(double *d, double *dot, t_mlx *mlx)
+{
+	double	t;
+	double	c[3];
+
+	vector_copy(c, mlx->data.pl->xc);
+	if (inner_product(d, mlx->data.pl->nc) == 0)
+		return (0);
+	t = (inner_product(mlx->data.pl->nc, c) - inner_product(dot, mlx->data.pl->nc)) / inner_product(d, mlx->data.pl->nc);
+	if (t < 0.1)
+		return (0);
+	return (1);
+}
+
+int	check_hit_gray_pl(t_mlx *mlx, int i, int j)
+{
+	t_plane	*save;
+	double	light[3];
+
+	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
+	normalize_vector(light);
+	save = mlx->data.pl;
+	while (mlx->data.pl != NULL)
+	{
+		if (check_hit_gray_pl_d(light, mlx->ray[i][j].dot, mlx) == 1)
+		{
+			mlx->data.pl = save;
+			return (1);
+		}
+		mlx->data.pl = mlx->data.pl->next;
+	}
+	mlx->data.pl = save;
+	return (0);
+}
+
+void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
+{
+	if (check_hit_gray_sp(mlx, i, j) == 1)
+		reset_phong_light(phong);
+	// else if (check_hit_gray_pl(mlx, i, j) == 1)
+	// 	reset_phong_light(phong);
+	// if (check_hit_gray_cy(mlx, i, j) == 1)
+	// 	reset_phong_light(phong);
+}
+
+
 void	phong_point(t_mlx *mlx, int i, int j)
 {
 	unsigned int	phong[3][3];
-	
-	/*주변광 + 반사광 + 빛*/
-	/*주변광 원래색 * 주변광색 / 255 * 세기*/
+
 	ambient_light(mlx, i, j, phong[0]);
 	diffuse_light(mlx, i, j, phong[1]);
 	specular_light(mlx, i, j, phong[2]);
+	gray_exist(mlx, i, j, phong);
 	mlx->img.data[1600 * j + i] = mix_color(phong);
 
+}
+
+void	find_ray_dot(t_mlx *mlx, int i, int j)
+{
+	if (mlx->ray[i][j].deep < 0)
+	
+	mlx->ray[i][j].dot[0] = mlx->ray[i][j].deep * mlx->ray[i][j].d[0]; 
+	mlx->ray[i][j].dot[1] = mlx->ray[i][j].deep * mlx->ray[i][j].d[1]; 
+	mlx->ray[i][j].dot[2] = mlx->ray[i][j].deep * mlx->ray[i][j].d[2]; 
 }
 
 void	phong_init(t_mlx *mlx)
@@ -1258,7 +1399,11 @@ void	phong_init(t_mlx *mlx)
 		j = 0;
 		while (j < 900)
 		{
-			phong_point(mlx, i, j);
+			if (mlx->ray[i][j].deep > 0.00001)
+			{
+				find_ray_dot(mlx, i, j);
+				phong_point(mlx, i, j);
+			}
 			j++;
 		}
 		i++;
@@ -1270,7 +1415,8 @@ int	loop_main(t_mlx *mlx)
 	t_mdata	rot;
 
 	// test(mlx->data);
-		ctest(mlx->data);
+
+	ctest(mlx->data);
 	copy_rot_data(mlx);
 	rot = data_cam_num_init(*mlx);
 	// print_rot_data(rot_data);
