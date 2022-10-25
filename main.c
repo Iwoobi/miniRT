@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 22:27:06 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/25 23:09:00 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,6 @@ int	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 		if (mlx->xpm.img == NULL)
 		{
 			print_error("couldn't open xpm file.");
-			return (0);
 		}
 		mlx->xpm.data = (int *)mlx_get_data_addr(mlx->xpm.img, &mlx->xpm.bpp, &mlx->xpm.size_l, &mlx->xpm.endian);
 		while (**str != '\n')
@@ -1015,9 +1014,9 @@ void	xpm_color_select(t_mlx *mlx, unsigned int *rgb)
 	double	i;
 	double	j;
 
-	i = (mlx->data.sp->u[0] * 6) / (M_PI);
-	j = (mlx->data.sp->u[1] * 6) / (M_PI);
-	hex_to_rgb(mlx->xpm.data[(int)(i * mlx->xpm.w / 2) + (int)(mlx->xpm.w * j * mlx->xpm.h / 2)], rgb);
+	i = (mlx->data.sp->u[0]) / (M_PI);
+	j = (mlx->data.sp->u[1]) / (M_PI);
+	hex_to_rgb(mlx->xpm.data[(int)(i * mlx->xpm.w) + mlx->xpm.w * (int)(j * mlx->xpm.h)], rgb);
 }
 
 void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
@@ -1035,10 +1034,10 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 	}
 	else if (obj == SP)
 	{
-		if (mlx->data.sp->checker == 1)
+		if (mlx->data.sp->checker == 1 && mlx->xpm.img == NULL)
 			checker_borad(mlx->data.sp->u, rgb);
-		if (mlx->xpm.img != NULL)
-			xpm_color_select(mlx);
+		else if (mlx->xpm.img != NULL)
+			xpm_color_select(mlx, rgb);
 	}
 }
 
@@ -1411,7 +1410,7 @@ void	phong_point(t_mlx *mlx, int i, int j)
 	ambient_light(mlx, i, j, phong[0]);
 	diffuse_light(mlx, i, j, phong[1]);
 	specular_light(mlx, i, j, phong[2]);
-	gray_exist(mlx, i, j, phong);
+	// gray_exist(mlx, i, j, phong);
 	mlx->img.data[1600 * j + i] = mix_color(phong);
 
 }
