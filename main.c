@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 23:09:00 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 01:01:59 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,11 @@ void	push_x_y_z(double *data, char **str)
 	}
 }
 
-int	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
+t_texture	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 {
 	int	i;
 	int	count;
+	char	*filename;
 
 	i = 0;
 	count = 0;
@@ -122,22 +123,26 @@ int	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 	if (div_str(*str, "checker") == 1)
 	{
 		*str += 7;
-		return (1);
+		return (CHECKER);
 	}
 	if (div_str(*str, "bump") == 1)
 	{
 		*str += 4;
-		while (**str == ' ' || **str == '\t')
+		while ((**str >= 9 && **str <= 13) || **str == 32)
 			(*str)++;
-		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, *str, &(mlx->xpm.w), &(mlx->xpm.h));
+		filename = (char *)malloc(sizeof(char) * (ft_strlen_2(*str) + 1));
+		ft_strcopy(filename, *str);
+		printf("%s\n", filename);
+		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, filename, &(mlx->xpm.w), &(mlx->xpm.h));
+		free(filename);
 		if (mlx->xpm.img == NULL)
 		{
 			print_error("couldn't open xpm file.");
 		}
 		mlx->xpm.data = (int *)mlx_get_data_addr(mlx->xpm.img, &mlx->xpm.bpp, &mlx->xpm.size_l, &mlx->xpm.endian);
-		while (**str != '\n')
+		while (**str != '\n' && **str != '\0')
 			(*str)++;
-		return (1);
+		return (BUMP);
 	}
 	while (i < 3)
 	{
@@ -150,7 +155,7 @@ int	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 			(*str)++;
 		i++;
 	}
-	return (0);
+	return (NONE);
 }
 
 void	null_check(char *str)
@@ -278,7 +283,7 @@ void	push_sp(char *str, t_mlx *mlx)
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
 	mlx->data.sp->r = ft_char_double(str, &count);
 	str += count;
-	mlx->data.sp->checker = push_rgb(&(mlx->data.sp->rgb[0]), &str, mlx);
+	mlx->data.sp->mode = push_rgb(&(mlx->data.sp->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.sp = save;
 }
@@ -307,7 +312,7 @@ void	push_pl(char *str, t_mlx *mlx)
 	mlx->data.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
 	push_x_y_z(&(mlx->data.pl->n[0]), &str);
-	mlx->data.pl->checker = push_rgb(&(mlx->data.pl->rgb[0]), &str, mlx);
+	mlx->data.pl->mode = push_rgb(&(mlx->data.pl->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.pl = save;
 }
@@ -341,7 +346,7 @@ void	push_cy(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.cy->h = ft_char_double(str, &count);
 	str += count;
-	mlx->data.cy->checker = push_rgb(&(mlx->data.cy->rgb[0]), &str, mlx);
+	mlx->data.cy->mode = push_rgb(&(mlx->data.cy->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.cy = save;
 }
@@ -842,7 +847,7 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 			mlx->t = -2;
 			return (0);
 		}
-		if (mlx->data.sp->checker == 1)
+		if (mlx->data.sp->mode != NONE)
 			uv_axis_sp(d, mlx);
 		return (1);
 	}
@@ -943,7 +948,7 @@ int	check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	return (mlx->flag);
 }
 
-void	checker_borad(double *uv, unsigned int *rgb)
+void	checker_board(double *uv, unsigned int *rgb)
 {
 	int	i;
 	int	j;
@@ -1024,19 +1029,19 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 	color_val(mlx, rgb, obj);
 	if (obj == PL)
 	{
-		if (mlx->data.pl->checker == 1)
-			checker_borad(mlx->data.pl->u, rgb);
+		if (mlx->data.pl->mode == CHECKER)
+			checker_board(mlx->data.pl->u, rgb);
 	}
 	else if (obj == CY)
 	{
-		if (mlx->data.cy->checker == 1)
-			checker_borad(mlx->data.cy->u, rgb);
+		if (mlx->data.cy->mode == CHECKER)
+			checker_board(mlx->data.cy->u, rgb);
 	}
 	else if (obj == SP)
 	{
-		if (mlx->data.sp->checker == 1 && mlx->xpm.img == NULL)
-			checker_borad(mlx->data.sp->u, rgb);
-		else if (mlx->xpm.img != NULL)
+		if (mlx->data.sp->mode == CHECKER)
+			checker_board(mlx->data.sp->u, rgb);
+		else if (mlx->data.sp->mode == BUMP)
 			xpm_color_select(mlx, rgb);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 22:24:30 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 01:02:40 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ typedef enum e_obj
 	SP
 }	t_obj;
 
+typedef enum e_texture
+{
+	NONE,
+	CHECKER,
+	BUMP
+}	t_texture;
+
 typedef struct s_img
 {
 	void	*img;
@@ -51,7 +58,7 @@ typedef struct s_plane
 	double			xc[3];
 	double			nc[3];
 	double			u[2];
-	int				checker;
+	t_texture		mode;
 	unsigned char	rgb[3];
 	struct s_plane	*next;
 }	t_plane;
@@ -62,7 +69,7 @@ typedef struct s_sphere
 	double			cc[3];
 	double			u[2];
 	double			r;
-	int				checker;
+	t_texture		mode;
 	unsigned char	rgb[3];
 	struct s_sphere	*next;
 }	t_sphere;
@@ -77,7 +84,7 @@ typedef struct s_cylinder
 	double				u[2];
 	double				n[3];
 	double				nc[3];
-	int					checker;
+	t_texture			mode;
 	unsigned char		rgb[3];
 	struct s_cylinder	*next;
 }	t_cylinder;
@@ -162,9 +169,10 @@ typedef struct s_vector
 }	t_vector;
 
 /*데이터*/
-int	ft_strlen(char *str);
+int		ft_strlen(char *str);
+void	ft_strcopy(char *s, char *tmp);
 double	ft_char_double(char *str, int *count);
-
+int		ft_strlen_2(char *str);
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
 
