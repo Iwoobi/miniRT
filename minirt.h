@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/24 22:16:42 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/25 21:49:18 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ typedef struct s_img
 	int		size_l;
 	int		bpp;
 	int		endian;
+	int		h;
+	int		w;
 }	t_img;
 /*데이터*/
 
@@ -141,6 +143,7 @@ typedef struct s_mlx
 	void	*mlx;
 	void	*win;
 	t_img	img;
+	t_img	xpm;
 	t_ray	**ray;
 	t_data	data;
 	int		size[2];

@@ -1,0 +1,17 @@
+# execution files
+/**/a.out
+
+# object files
+/**/*.o
+
+# vscode setting files
+/**/.vscode/
+
+# debugging files
+/**/*.dSYM/
+
+# library files
+/**/*.a
+
+# DS_Store files
+/**/.DS_Store
