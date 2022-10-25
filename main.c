@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 21:34:46 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/26 01:42:58 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1247,7 +1247,7 @@ int	check_hit_gray_sp_d(double *d, double *dot, t_mlx *mlx)
 	double	a;
 	double	a1;
 	double	a2;
-	double	a3;
+	double	a3; 
 	double	r;
 	double	t;
 	double	c[3];
@@ -1263,12 +1263,12 @@ int	check_hit_gray_sp_d(double *d, double *dot, t_mlx *mlx)
 	a1 = pow_2(vector_size(d));
 	a2 = 2 * (result1 - result2);
 	a3 = pow_2(vector_size(dot)) + pow_2(vector_size(c)) - r*r -2*inner_product(c, dot);
-	a = pow_2(a1) - 4* a2 *a3;
+	a = pow_2(a1) - (4 * a2 *a3);
 	// a = pow_2(result1 - result2) - pow_2(vector_size(d)) * (pow_2(vector_size(dot)) + pow_2(vector_size(c)) - r * r - 2 * inner_product(c, dot));
 	if (a >= 0.00000001)
 	{
 		// t = (result2 - result1 - sqrt(a)) / pow_2(vector_size(d));
-		t = (-1 * a2 - sqrt(a))/2 * pow_2(a1);
+		t = (-1 * a2 - sqrt(a))/(2 * pow_2(a1));
 		if (t < 0.001)
 			return (0);
 		return (1);
@@ -1289,7 +1289,7 @@ int	check_hit_gray_sp(t_mlx *mlx, int i, int j)
 	{
 		if (check_hit_gray_sp_d(light, mlx->ray[i][j].dot, mlx) == 1)
 		{
-			mlx->data.sp = save;	
+			mlx->data.sp = save;
 			return (1);
 		}
 		mlx->data.sp = mlx->data.sp->next;
@@ -1360,8 +1360,8 @@ void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
 {
 	if (check_hit_gray_sp(mlx, i, j) == 1)
 		reset_phong_light(phong);
-	// else if (check_hit_gray_pl(mlx, i, j) == 1)
-	// 	reset_phong_light(phong);
+	else if (check_hit_gray_pl(mlx, i, j) == 1)
+		reset_phong_light(phong);
 	// if (check_hit_gray_cy(mlx, i, j) == 1)
 	// 	reset_phong_light(phong);
 }
@@ -1380,9 +1380,7 @@ void	phong_point(t_mlx *mlx, int i, int j)
 }
 
 void	find_ray_dot(t_mlx *mlx, int i, int j)
-{
-	if (mlx->ray[i][j].deep < 0)
-	
+{	
 	mlx->ray[i][j].dot[0] = mlx->ray[i][j].deep * mlx->ray[i][j].d[0]; 
 	mlx->ray[i][j].dot[1] = mlx->ray[i][j].deep * mlx->ray[i][j].d[1]; 
 	mlx->ray[i][j].dot[2] = mlx->ray[i][j].deep * mlx->ray[i][j].d[2]; 
