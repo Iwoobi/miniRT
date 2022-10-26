@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:09:10 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:52:48 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,20 +127,18 @@ t_texture	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 	}
 	if (div_str(*str, "bump") == 1)
 	{
-		*str += 4;
-		while ((**str >= 9 && **str <= 13) || **str == 32)
-			(*str)++;
-		filename = (char *)malloc(sizeof(char) * (ft_strlen_2(*str) + 1));
-		ft_strcopy(filename, *str);
-		printf("%s\n", filename);
-		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, filename, &(mlx->xpm.w), &(mlx->xpm.h));
+		char **file;
+		file = ft_split(*str, ' ');
+		if (file == NULL)
+			print_error("malloc error.");
+		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, file[0], &(mlx->xpm.w), &(mlx->xpm.h));
 		free(filename);
 		if (mlx->xpm.img == NULL)
 		{
 			print_error("couldn't open xpm file.");
 		}
 		mlx->xpm.data = (int *)mlx_get_data_addr(mlx->xpm.img, &mlx->xpm.bpp, &mlx->xpm.size_l, &mlx->xpm.endian);
-		while (**str != '\n' && **str != '\0')
+		while (**str != ' ' && **str != '\0')
 			(*str)++;
 		return (BUMP);
 	}

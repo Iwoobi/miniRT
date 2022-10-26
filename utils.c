@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:02:14 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 01:00:14 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:44:47 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,19 @@ int	ft_strlen_2(char *str)
 }
 
 void	ft_strcopy(char *s, char *tmp)
+{
+	int	i;
+
+	i = 0;
+	while (tmp[i] != '\0' && tmp[i] != ' ')
+	{
+		s[i] = tmp[i];
+		i++;
+	}
+	s[i] = '\0';
+}
+
+void	ft_strcopy2(char *s, char *tmp)
 {
 	int	i;
 

@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:00:58 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 15:48:11 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,10 @@ typedef struct s_mlx
 /*데이터*/
 int		ft_strlen(char *str);
 void	ft_strcopy(char *s, char *tmp);
+void	ft_strcopy2(char *s, char *tmp);
 double	ft_char_double(char *str, int *count);
 int		ft_strlen_2(char *str);
+char	**ft_split(char const *s, char c);
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
 
