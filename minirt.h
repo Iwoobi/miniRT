@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 08:51:07 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/26 12:55:13 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,17 @@ typedef struct s_light
 	struct s_light	*next;
 }	t_light;
 
+typedef struct s_count
+{
+	int	count_l;
+	int	count_al;
+	int	count_cam;
+	int	count_sp;
+	int	count_pl;
+	int	count_cy;
+	int	count_cr;
+}	t_count;
+
 
 typedef struct s_data
 {
@@ -133,13 +144,7 @@ typedef struct s_data
 	t_plane		*pl;
 	t_cylinder	*cy;
 	t_cron		*cr;
-	int			count_l;
-	int			count_al;
-	int			count_cam;
-	int			count_sp;
-	int			count_pl;
-	int			count_cy;
-	int			count_cr;
+	t_count		num;
 }	t_data;
 
 typedef struct s_mdata

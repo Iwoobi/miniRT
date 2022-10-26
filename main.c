@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 12:00:34 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/26 13:03:23 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,9 +172,9 @@ void	push_a(char *str, t_mlx *mlx)
 	save = mlx->data.al;
 	count = 0;
 	str++;
-	while (mlx->data.count_al > count)
+	while (mlx->data.num.count_al > count)
 	{
-		if (mlx->data.count_al - count == 1)
+		if (mlx->data.num.count_al - count == 1)
 		{
 			mlx->data.al->next = (t_alight *)malloc(sizeof(t_alight) * 1);
 			if (mlx->data.al->next == NULL)
@@ -185,7 +185,7 @@ void	push_a(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_al += 1;
+	mlx->data.num.count_al += 1;
 	mlx->data.al->ratio = ft_char_double(str, &count);
 	str += count;
 	push_rgb(&(mlx->data.al->rgb[0]), &str, mlx);
@@ -201,9 +201,9 @@ void	push_c(char *str, t_mlx *mlx)
 	save = mlx->data.cam;
 	count = 0;
 	str += 1;
-	while (mlx->data.count_cam > count)
+	while (mlx->data.num.count_cam > count)
 	{
-		if (mlx->data.count_cam - count == 1)
+		if (mlx->data.num.count_cam - count == 1)
 		{
 			mlx->data.cam->next = (t_cam *)malloc(sizeof(t_cam) * 1);
 			if (mlx->data.cam->next == NULL)
@@ -214,7 +214,7 @@ void	push_c(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_cam += 1;
+	mlx->data.num.count_cam += 1;
 	push_x_y_z(&(mlx->data.cam->x[0]), &str);
 	push_x_y_z(&(mlx->data.cam->n[0]), &str);
 	mlx->data.cam->fov = ft_char_double(str, &count);
@@ -231,9 +231,9 @@ void	push_l(char *str, t_mlx *mlx)
 	save = mlx->data.l;
 	count = 0;
 	str++;
-	while (mlx->data.count_l > count)
+	while (mlx->data.num.count_l > count)
 	{
-		if (mlx->data.count_l - count == 1)
+		if (mlx->data.num.count_l - count == 1)
 		{
 			mlx->data.l->next = (t_light *)malloc(sizeof(t_light) * 1);
 			if (mlx->data.l->next == NULL)
@@ -244,7 +244,7 @@ void	push_l(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_l += 1;
+	mlx->data.num.count_l += 1;
 	push_x_y_z(&(mlx->data.l->x[0]), &str);
 	mlx->data.l->ratio = ft_char_double(str, &count);
 	str += count;
@@ -261,9 +261,9 @@ void	push_sp(char *str, t_mlx *mlx)
 	save = mlx->data.sp;
 	count = 0;
 	str += 2;
-	while (mlx->data.count_sp > count)
+	while (mlx->data.num.count_sp > count)
 	{
-		if (mlx->data.count_sp - count == 1)
+		if (mlx->data.num.count_sp - count == 1)
 		{
 			mlx->data.sp->next = (t_sphere *)malloc(sizeof(t_sphere) * 1);
 			if (mlx->data.sp->next == NULL)
@@ -274,7 +274,7 @@ void	push_sp(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_sp += 1;
+	mlx->data.num.count_sp += 1;
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
 	mlx->data.sp->r = ft_char_double(str, &count);
 	str += count;
@@ -291,9 +291,9 @@ void	push_pl(char *str, t_mlx *mlx)
 	save = mlx->data.pl;
 	count = 0;
 	str += 2;
-	while (mlx->data.count_pl > count)
+	while (mlx->data.num.count_pl > count)
 	{
-		if (mlx->data.count_pl - count == 1)
+		if (mlx->data.num.count_pl - count == 1)
 		{
 			mlx->data.pl->next = (t_plane *)malloc(sizeof(t_plane) * 1);
 			if (mlx->data.pl->next == NULL)
@@ -304,7 +304,7 @@ void	push_pl(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_pl += 1;
+	mlx->data.num.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
 	push_x_y_z(&(mlx->data.pl->n[0]), &str);
 	mlx->data.pl->checker = push_rgb(&(mlx->data.pl->rgb[0]), &str, mlx);
@@ -325,9 +325,9 @@ void	push_cy(char *str, t_mlx *mlx)
 	save = mlx->data.cy;
 	count = 0;
 	str += 2;
-	while (mlx->data.count_cy > count)
+	while (mlx->data.num.count_cy > count)
 	{
-		if (mlx->data.count_cy - count == 1)
+		if (mlx->data.num.count_cy - count == 1)
 		{
 			mlx->data.cy->next = (t_cylinder *)malloc(sizeof(t_cylinder) * 1);
 			if (mlx->data.cy->next == NULL)
@@ -338,7 +338,7 @@ void	push_cy(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_cy += 1;
+	mlx->data.num.count_cy += 1;
 	push_x_y_z(&(mlx->data.cy->c[0]), &str);
 	push_x_y_z(&(mlx->data.cy->n[0]), &str);
 	mlx->data.cy->r = ft_char_double(str, &count);
@@ -359,9 +359,9 @@ void	push_cr(char *str, t_mlx *mlx)
 	save = mlx->data.cr;
 	count = 0;
 	str += 4;
-	while (mlx->data.count_cr > count)
+	while (mlx->data.num.count_cr > count)
 	{
-		if (mlx->data.count_cr - count == 1)
+		if (mlx->data.num.count_cr - count == 1)
 		{
 			mlx->data.cr->next = (t_cron *)malloc(sizeof(t_cron) * 1);
 			if (mlx->data.cr->next == NULL)
@@ -372,7 +372,7 @@ void	push_cr(char *str, t_mlx *mlx)
 		count++;
 	}
 	count = 0;
-	mlx->data.count_cr += 1;
+	mlx->data.num.count_cr += 1;
 	push_x_y_z(&(mlx->data.cr->c[0]), &str);
 	push_x_y_z(&(mlx->data.cr->n[0]), &str);
 	mlx->data.cr->r = ft_char_double(str, &count);
@@ -380,7 +380,7 @@ void	push_cr(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.cr->h = ft_char_double(str, &count);
 	str += count;
-	mlx->data.cy->checker = push_rgb(&(mlx->data.cr->rgb[0]), &str, mlx);
+	mlx->data.cr->checker = push_rgb(&(mlx->data.cr->rgb[0]), &str, mlx);
 	null_check(str);
 	mlx->data.cr = save;
 }
@@ -430,41 +430,41 @@ void	push_data(int fd, t_mlx *mlx)
 
 void	close_non_data(t_mlx *mlx)
 {
-	if (mlx->data.count_al == 0)
+	if (mlx->data.num.count_al == 0)
 	{
 		free(mlx->data.al);
 		mlx->data.al = NULL;
 	}
-	if (mlx->data.count_cy == 0)
+	if (mlx->data.num.count_cy == 0)
 	{
 		free(mlx->data.cy);
 		mlx->data.cy = NULL;
 	}
-	if (mlx->data.count_l == 0)
+	if (mlx->data.num.count_l == 0)
 	{
 		free(mlx->data.l);
 		mlx->data.l = NULL;
 	}
-	if (mlx->data.count_pl == 0)
+	if (mlx->data.num.count_pl == 0)
 	{
 		free(mlx->data.pl);
 		mlx->data.pl = NULL;
 	}
-	if (mlx->data.count_sp == 0)
+	if (mlx->data.num.count_sp == 0)
 	{
 		free(mlx->data.sp);
 		mlx->data.sp = NULL;
 	}
-	if (mlx->data.count_cr == 0)
+	if (mlx->data.num.count_cr == 0)
 	{
-		free(mlx->data.sp);
-		mlx->data.sp = NULL;
+		free(mlx->data.cr);
+		mlx->data.cr = NULL;
 	}
 }
 
 void	check_cam_error(t_mlx *mlx)
 {
-	if (mlx->data.count_cam == 0)
+	if (mlx->data.num.count_cam == 0)
 		print_error("check cam data");
 }
 
@@ -483,13 +483,13 @@ void	init_mlx_data(t_mlx *mlx)
 	mlx->size[1] = 900;
 	mlx->cam_num = 0;
 	mlx->xpm.img = NULL;
-	mlx->data.count_l = 0;
-	mlx->data.count_al = 0;
-	mlx->data.count_cam = 0;
-	mlx->data.count_sp = 0;
-	mlx->data.count_pl = 0;
-	mlx->data.count_cy = 0;
-	mlx->data.count_cr = 0;
+	mlx->data.num.count_l = 0;
+	mlx->data.num.count_al = 0;
+	mlx->data.num.count_cam = 0;
+	mlx->data.num.count_sp = 0;
+	mlx->data.num.count_pl = 0;
+	mlx->data.num.count_cy = 0;
+	mlx->data.num.count_cr = 0;
 	mlx->ray = (t_ray **)malloc(sizeof(t_ray *) * 1600);
 	if (mlx->ray == NULL)
 		print_error("malloc error");
@@ -925,10 +925,10 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 	double	r;
 
 	r = mlx->data.sp->r;
-	a = pow_2(inner_product(d, c)) - pow_2(vector_size(d)) * (pow_2(vector_size(c)) - r * r);
-	if (a >= 0.00000001)
+	a = equation_d(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
+	if (a >= 0)
 	{
-		mlx->t = (inner_product(d, c) - sqrt(a)) / pow_2(vector_size(d));
+		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
 		if (mlx->t < 0)
 		{
 			mlx->t = -2;
@@ -1692,7 +1692,7 @@ void	phong_point(t_mlx *mlx, int i, int j)
 	ambient_light(mlx, i, j, phong[0]);
 	diffuse_light(mlx, i, j, phong[1]);
 	specular_light(mlx, i, j, phong[2]);
-	// gray_exist(mlx, i, j, phong);
+	gray_exist(mlx, i, j, phong);
 	mlx->img.data[1600 * j + i] = mix_color(phong);
 
 }
