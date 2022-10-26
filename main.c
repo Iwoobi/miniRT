@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 13:03:23 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/26 13:23:25 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1277,7 +1277,6 @@ void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 			mlx->flag = 2;
 		}
 	}
-
 }
 
 int	check_hit_cr_d(double *d, double *n, double *c, t_mlx *mlx)
