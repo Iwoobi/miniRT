@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/25 22:24:30 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/26 08:51:07 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ typedef enum e_obj
 {
 	PL,
 	CY,
-	SP
+	SP,
+	CR
 }	t_obj;
 
 typedef struct s_img
@@ -82,13 +83,27 @@ typedef struct s_cylinder
 	struct s_cylinder	*next;
 }	t_cylinder;
 
+typedef struct s_cron
+{
+	double			c[3];
+	double			cc[3];
+	double			h;
+	double			n[3];
+	double			nc[3];
+	double			r;
+	double			u[2];
+	int				checker;
+	unsigned char	rgb[3];
+	struct s_cron	*next;
+}	t_cron;
+
 typedef	struct s_alight
 {
 	double			ratio;
 	unsigned char	rgb[3];
 	struct s_alight	*next;
 }	t_alight;
- 
+
 typedef	struct s_cam
 {
 	double			x[3];
@@ -117,12 +132,14 @@ typedef struct s_data
 	t_sphere	*sp;
 	t_plane		*pl;
 	t_cylinder	*cy;
+	t_cron		*cr;
 	int			count_l;
 	int			count_al;
 	int			count_cam;
 	int			count_sp;
 	int			count_pl;
 	int			count_cy;
+	int			count_cr;
 }	t_data;
 
 typedef struct s_mdata
@@ -153,13 +170,6 @@ typedef struct s_mlx
 	double	t;
 	int		flag;
 }	t_mlx;
-
-typedef struct s_vector
-{
-	double	x;
-	double	y;
-	double	z;
-}	t_vector;
 
 /*데이터*/
 int	ft_strlen(char *str);
