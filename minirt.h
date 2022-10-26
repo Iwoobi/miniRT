@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 12:55:13 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/26 15:00:58 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,13 @@ typedef enum e_obj
 	CR
 }	t_obj;
 
+typedef enum e_texture
+{
+	NONE,
+	CHECKER,
+	BUMP
+}	t_texture;
+
 typedef struct s_img
 {
 	void	*img;
@@ -52,7 +59,7 @@ typedef struct s_plane
 	double			xc[3];
 	double			nc[3];
 	double			u[2];
-	int				checker;
+	t_texture		mode;
 	unsigned char	rgb[3];
 	struct s_plane	*next;
 }	t_plane;
@@ -63,7 +70,7 @@ typedef struct s_sphere
 	double			cc[3];
 	double			u[2];
 	double			r;
-	int				checker;
+	t_texture		mode;
 	unsigned char	rgb[3];
 	struct s_sphere	*next;
 }	t_sphere;
@@ -78,7 +85,7 @@ typedef struct s_cylinder
 	double				u[2];
 	double				n[3];
 	double				nc[3];
-	int					checker;
+	t_texture			mode;
 	unsigned char		rgb[3];
 	struct s_cylinder	*next;
 }	t_cylinder;
@@ -92,7 +99,7 @@ typedef struct s_cron
 	double			nc[3];
 	double			r;
 	double			u[2];
-	int				checker;
+	t_texture		mode;
 	unsigned char	rgb[3];
 	struct s_cron	*next;
 }	t_cron;
@@ -177,9 +184,10 @@ typedef struct s_mlx
 }	t_mlx;
 
 /*데이터*/
-int	ft_strlen(char *str);
+int		ft_strlen(char *str);
+void	ft_strcopy(char *s, char *tmp);
 double	ft_char_double(char *str, int *count);
-
+int		ft_strlen_2(char *str);
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
 
