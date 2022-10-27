@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:09:10 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 22:57:03 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -604,15 +604,6 @@ double	find_f(double a, double b, double c)
 
 void	 rot_matrix(double *x, double *y, double *z, double *result)
 {
-	// result[0] = x[0] / vector_size(x);
-	// result[1] = y[0] / vector_size(y);
-	// result[2] = z[0] / vector_size(z);
-	// result[3] = x[1] / vector_size(x);
-	// result[4] = y[1] / vector_size(y);
-	// result[5] = z[1] / vector_size(z);
-	// result[6] = x[2] / vector_size(x);
-	// result[7] = y[2] / vector_size(y);
-	// result[8] = z[2] / vector_size(z);
 	result[0] = x[0] / vector_size(x);
 	result[1] = x[1] / vector_size(x);
 	result[2] = x[2] / vector_size(x);
@@ -781,7 +772,9 @@ void	updata_rot_cr(t_data *data, t_mdata mdata)
 		data->cr->cc[1] -= mdata.m[1];
 		data->cr->cc[2] -= mdata.m[2];
 		trans_rot_data(data->cr->cc, mdata);
+		printf("\n\n\n\n\n\n\n\n\n  %f %f %f \n\n\n\n\n\n\n\n", data->cr->cc[0],data->cr->cc[1],data->cr->cc[2] );
 		trans_rot_data(data->cr->nc, mdata); 
+		printf("\n\n\n\n\n\n\n\n\n  %f %f %f \n\n\n\n\n\n\n\n", data->cr->nc[0],data->cr->nc[1],data->cr->nc[2] );
 		data->cr = data->cr->next;
 	}
 	data->cr = save;
@@ -803,6 +796,7 @@ void	test(t_data mlx)
 	test_c(mlx);
 	test_l(mlx);
 	test_cy(mlx);
+	test_cr(mlx);
 	test_pl(mlx);
 	test_sp(mlx);
 }
@@ -903,6 +897,7 @@ void	copy_rot_data(t_mlx *mlx)
 void	ctest(t_data mlx)
 {
 	ctest_cy(mlx);
+	ctest_cr(mlx);
 	ctest_l(mlx);
 	ctest_pl(mlx);
 	ctest_sp(mlx);
@@ -931,10 +926,10 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 
 	r = mlx->data.sp->r;
 	a = equation_d(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
-	if (a >= 0)
+	if (a >= 0.000001)
 	{
 		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
-		if (mlx->t < 0)
+		if (mlx->t < 0.000001)
 		{
 			mlx->t = -2;
 			return (0);
@@ -976,7 +971,7 @@ void	check_hit_top_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	vector_plus(vec, l, vec);
 	if (vector_size(vec) < mlx->data.cy->r)
 	{
-		if (mlx->t < 0 || mlx->t > t)
+		if (mlx->t < 0.000001 || mlx->t > t)
 		{
 			mlx->t = t;
 			mlx->flag = 3;
@@ -995,7 +990,7 @@ void	check_hit_bot_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	vector_plus(vec, c, vec);
 	if (vector_size(vec) < mlx->data.cy->r)
 	{
-		if (mlx->t < 0 || mlx->t > t)
+		if (mlx->t < 0.000001 || mlx->t > t)
 		{
 			mlx->t = t;
 			mlx->flag = 2;
@@ -1014,12 +1009,12 @@ int	check_hit_side_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	cross_product(c, n, result1);
 	cross_product(d, n, result2);
 	a = equation_d(pow_2(vector_size(result2)), -2 * inner_product(result1, result2), pow_2(vector_size(result1)) - r * r);
-	if (a >= 0)
+	if (a >= 0.000001)
 	{
 		mlx->t = find_f(pow_2(vector_size(result2)), -2 * inner_product(result1, result2), pow_2(vector_size(result1)) - r * r);
 		if (inner_product(d, n) * mlx->t - inner_product(c, n) <= mlx->data.cy->h)
 		{
-			if (inner_product(d, n) * mlx->t - inner_product(c, n) >= 0)
+			if (inner_product(d, n) * mlx->t - inner_product(c, n) >= 0.000001)
 			{
 				mlx->flag = 1;
 				return (1);
@@ -1158,7 +1153,7 @@ void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
 	{
 		if (check_hit_sp_d(d, mlx->data.sp->cc, mlx) == 1)
 		{
-			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0.000001)
 			{
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, SP);
@@ -1271,12 +1266,12 @@ void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 		return ;
 	t = inner_product(c, n) / inner_product(d, n);
 	vector_n(d ,t, vec);
-	if (t < 0)
+	if (t < 0.000001)
 		return ;
 	vector_minus(vec, c, vec);
 	if (vector_size(vec) <= mlx->data.cr->r)
 	{
-		if (mlx->t > t || mlx->t < 0)
+		if (mlx->t > t || mlx->t < 0.000001)
 		{
 			mlx->t = t;
 			mlx->flag = 2;
@@ -1301,7 +1296,6 @@ void	normal_vector_side_cr(t_mlx *mlx, int i, int j)
 	find_cron_head(mlx->data.cr->nc, mlx->data.cr->h, mlx->data.cr->cc, head);
 	vector_n(mlx->ray[i][j].d, mlx->t, cross_dot_n);
 	vector_minus(cross_dot_n, head, cross_dot_n);
-	normalize_vector(cross_dot_n);
 	cross_product(cross_dot_n, mlx->data.cr->nc, cross_x);
 	cross_product(cross_x, cross_dot_n, mlx->ray[i][j].n);
 	normalize_vector(mlx->ray[i][j].n);
@@ -1309,10 +1303,19 @@ void	normal_vector_side_cr(t_mlx *mlx, int i, int j)
 
 void	normal_vector_cr(t_mlx *mlx, int i, int j)
 {
-	if (mlx->flag == 2)
-		vector_n(mlx->data.cr->nc, -1, mlx->ray[i][j].n);
-	if (mlx->flag == 1)
-		normal_vector_side_cr(mlx, i, j);
+	if (mlx->data.cr->mode != BUMP)
+		if (mlx->flag == 2)
+			vector_n(mlx->data.cr->nc, -1, mlx->ray[i][j].n);
+		else if (mlx->flag == 1)
+			normal_vector_side_cr(mlx, i, j);
+	else
+	{
+		mlx->data.cr->xmp.normal.data[i, w*j ] --> rgb;
+		vector_n(rgb, 2, mlx->ray[i][j].n);
+		mlx->ray[i][j].n[0] -= 1;
+		mlx->ray[i][j].n[1] -= 1;
+		mlx->ray[i][j].n[2] -= 1;
+	}
 }
 
 void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
@@ -1325,7 +1328,7 @@ void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
 		normalize_vector(mlx->data.cr->nc);
 		if (check_hit_cr_d(d, mlx->data.cr->nc, mlx->data.cr->cc, mlx) != 0)
 		{
-			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0.000001)
 			{
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, CR);
@@ -1352,7 +1355,7 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 		normalize_vector(mlx->data.pl->nc);
 		if (check_hit_pl_d(d, mlx->data.pl->xc, mlx->data.pl->nc, mlx) == 1)
 		{
-			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0.000001)
 			{
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, PL);
@@ -1435,8 +1438,9 @@ void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff)
 
 	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
 	normalize_vector(light);
+	normalize_vector(mlx->ray[i][j].n);
 	res = inner_product(mlx->ray[i][j].n, light);
-	if (res < 0)
+	if (res < 0.000001)
 		res = 0;
 	diff[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * res * mlx->data.l->ratio / 255;
 	diff[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * res * mlx->data.l->ratio / 255;
@@ -1459,21 +1463,24 @@ void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 	if (val < 0.0000001)
 		val = 0;
 	val = pow(val, 10);
-	// spec[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio * val / 255;
-	// spec[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio * val / 255;
-	// spec[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio * val / 255;
-	spec[0] = 255 * val;
-	spec[1] = 255 * val;
-	spec[2] = 255 * val;
+	spec[0] = 10 * mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] * mlx->data.al->ratio * val / 255;
+	spec[1] = 10 * mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] * mlx->data.al->ratio * val / 255;
+	spec[2] = 10 * mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] * mlx->data.al->ratio * val / 255;
+	// spec[0] = 255 * val;
+	// spec[1] = 255 * val;
+	// spec[2] = 255 * val;
 }
 
 int	mix_color(unsigned int phong[3][3])
 {
 	unsigned int	result[3];
 
-	result[0] = phong[0][0] + phong[1][0] + 0.5 * phong[2][0];
-	result[1] = phong[0][1] + phong[1][1] + 0.5 * phong[2][1];
-	result[2] = phong[0][2] + phong[1][2] + 0.5 * phong[2][2];
+	result[0] = phong[0][0] + phong[1][0] + 0.5* phong[2][0];
+	result[1] = phong[0][1] + phong[1][1] + 0.5* phong[2][1];
+	result[2] = phong[0][2] + phong[1][2] + 0.5* phong[2][2];
+	// result[0] = phong[1][0];
+	// result[1] = phong[1][1];
+	// result[2] = phong[1][2];
 	// result[0] = phong[2][0];
 	// result[1] = phong[2][1];
 	// result[2] = phong[2][2];
@@ -1508,7 +1515,7 @@ int	check_hit_gray_sp_d(double *d, double *dot, t_mlx *mlx)
 	double	mid[3];
 	double	result;
 
-	if (vector_size(d) == 0)
+	if (vector_size(d) < 0.000001)
 		return (0);
 	vector_copy(mid, mlx->data.sp->cc);
 	vector_minus(dot, mid, mid);
@@ -1517,10 +1524,10 @@ int	check_hit_gray_sp_d(double *d, double *dot, t_mlx *mlx)
 	b = 2 * result;
 	c = pow_2(vector_size(mid)) - pow_2(mlx->data.sp->r);
 	exist = pow_2(b) - (4 * a * c);
-	if (exist >= 0)
+	if (exist >= 0.0000001)
 	{
 		t = (-1 * b - sqrt(exist))/(2 * pow_2(a));
-		if (t < 0.001)
+		if (t < 0.000001)
 			return (0);
 		return (1);
 	}
@@ -1557,10 +1564,10 @@ int	check_hit_gray_cy_top_d(double *d, double *dot, t_mlx *mlx)
 	vector_n(mlx->data.cy->nc, mlx->data.cy->h, c);
 	vector_plus(c, mlx->data.cy->cc, c);
 	vector_minus(c, dot, vec);
-	if (inner_product(d, mlx->data.cy->nc) == 0)
+	if (inner_product(d, mlx->data.cy->nc) < 0.000001)
 		return (0);
 	t = inner_product(vec, mlx->data.cy->nc) / inner_product(d, mlx->data.cy->nc);
-	if (t < 0.001)
+	if (t < 0.000001)
 		return (0);
 	vector_n(d, t, vec);
 	vector_plus(vec, dot, vec);
@@ -1576,10 +1583,10 @@ int	check_hit_gray_cy_bot_d(double *d, double *dot, t_mlx *mlx)
 	double	t;
 
 	vector_minus(mlx->data.cy->cc, dot, vec);
-	if (inner_product(d, mlx->data.cy->nc) == 0)
+	if (inner_product(d, mlx->data.cy->nc) < 0.000001)
 		return (0);
 	t = inner_product(vec, mlx->data.cy->nc) / inner_product(d, mlx->data.cy->nc);
-	if (t < 0.001)
+	if (t < 0.000001)
 		return (0);
 	vector_n(d, t, vec);
 	vector_plus(vec, dot, vec);
@@ -1603,7 +1610,7 @@ int	check_hit_gray_cy_side_d(double *d, double *dot, t_mlx *mlx)
 	if (equation_d(pow_2(vector_size(cross_d_n)), 2 * inner_product(cross_dot_c_n, cross_d_n), pow_2(vector_size(cross_dot_c_n)) - pow_2(t)) < 0)
 		return (0);
 	t = find_f(pow_2(vector_size(cross_d_n)), 2 * inner_product(cross_dot_c_n, cross_d_n), pow_2(vector_size(cross_dot_c_n)) - pow_2(t));
-	if (t < 0.00000000)
+	if (t < 0.00000001)
 		return (0);
 	if (inner_product(d, mlx->data.cy->nc) * t + inner_product(vec, mlx->data.cy->nc) < mlx->data.cy->h)
 	{
@@ -1649,10 +1656,10 @@ int	check_hit_gray_pl_d(double *d, double *dot, t_mlx *mlx)
 {
 	double	t;
 
-	if (inner_product(d, mlx->data.pl->nc) == 0)
+	if (inner_product(d, mlx->data.pl->nc) < 0.000001)
 		return (0);
 	t = (inner_product(mlx->data.pl->nc, mlx->data.pl->xc) - inner_product(dot, mlx->data.pl->nc)) / inner_product(d, mlx->data.pl->nc);
-	if (t <= 0.2)
+	if (t <= 0.000001)
 		return (0);
 	return (1);
 }
@@ -1688,17 +1695,37 @@ void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
 		reset_phong_light(phong);
 }
 
+void	phong_reset(unsigned int phong[3][3])
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (i < 3)
+	{
+		j = 0;
+		while (j < 3)
+		{
+			phong[i][j]= 0;
+			j++;
+		}
+		i++;
+	}
+}
 
 void	phong_point(t_mlx *mlx, int i, int j)
 {
 	unsigned int	phong[3][3];
 
+	phong_reset(phong);
 	ambient_light(mlx, i, j, phong[0]);
-	diffuse_light(mlx, i, j, phong[1]);
-	specular_light(mlx, i, j, phong[2]);
-	gray_exist(mlx, i, j, phong);
+	if (mlx->data.num.count_l != 0)
+	{
+		diffuse_light(mlx, i, j, phong[1]);
+		specular_light(mlx, i, j, phong[2]);
+		gray_exist(mlx, i, j, phong);
+	}
 	mlx->img.data[1600 * j + i] = mix_color(phong);
-
 }
 
 void	find_ray_dot(t_mlx *mlx, int i, int j)
@@ -1733,17 +1760,19 @@ void	phong_init(t_mlx *mlx)
 int	loop_main(t_mlx *mlx)
 {
 	t_mdata	rot;
-
-	// test(mlx->data);
-
-	ctest(mlx->data);
-	copy_rot_data(mlx);
-	rot = data_cam_num_init(*mlx);
-	// print_rot_data(rot_data);
-	exec_rot_data(mlx, rot);
-	canvas_match(mlx);
-	phong_init(mlx);
-	mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img.img, 0, 0);
+	static int	i = 0;
+	if (i == 0)
+	{
+		test(mlx->data);
+		copy_rot_data(mlx);
+		rot = data_cam_num_init(*mlx);
+		exec_rot_data(mlx, rot);
+		ctest(mlx->data);
+		canvas_match(mlx);
+		phong_init(mlx);
+		mlx_put_image_to_window(mlx->mlx, mlx->win, mlx->img.img, 0, 0);
+		i++;
+	}
 	return (0);
 }
 

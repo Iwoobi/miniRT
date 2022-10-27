@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:00:58 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 22:33:01 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,10 +198,12 @@ void	test_l(t_data mlx);
 void	test_cy(t_data mlx);
 void	test_sp(t_data mlx);
 void	test_pl(t_data mlx);
+void	test_cr(t_data mlx);
+
 
 void	ctest_l(t_data mlx);
 void	ctest_cy(t_data mlx);
 void	ctest_sp(t_data mlx);
 void	ctest_pl(t_data mlx);
-
+void	ctest_cr(t_data mlx);
 #endif

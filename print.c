@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 22:16:20 by youhan            #+#    #+#             */
-/*   Updated: 2022/09/27 18:49:01 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/27 22:33:01 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,37 @@ void	test_cy(t_data mlx)
 	}
 }
 
+void	test_cr(t_data mlx)
+{
+	int i;
+	
+	printf("\ntest cr\n");
+	while (mlx.cr != NULL)
+	{
+		i = 0;
+		while (i < 3)
+		{
+			printf("x[%d] : %f\n",i,mlx.cr->c[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 3)
+		{
+			printf("n[%d] : %f\n",i,mlx.cr->n[i]);
+			i++;
+		}
+		printf("r : %f\n", mlx.cr->r);
+		printf("h : %f\n", mlx.cr->h);
+		i = 0;
+		while (i < 3)
+		{
+			printf("rgb[%d] : %d\n",i,mlx.cr->rgb[i]);
+			i++;
+		}
+		mlx.cr = mlx.cr->next;
+	}
+}
+
 
 void	ctest_l(t_data mlx)
 {
@@ -268,5 +299,37 @@ void	ctest_cy(t_data mlx)
 		mlx.cy = mlx.cy->next;
 	}
 }
+
+void	ctest_cr(t_data mlx)
+{
+	int i;
+	
+	printf("\ntest cr\n");
+	while (mlx.cr != NULL)
+	{
+		i = 0;
+		while (i < 3)
+		{
+			printf("x[%d] : %f\n",i,mlx.cr->cc[i]);
+			i++;
+		}
+		i = 0;
+		while (i < 3)
+		{
+			printf("n[%d] : %f\n",i,mlx.cr->nc[i]);
+			i++;
+		}
+		printf("r : %f\n", mlx.cr->r);
+		printf("h : %f\n", mlx.cr->h);
+		i = 0;
+		while (i < 3)
+		{
+			printf("rgb[%d] : %d\n",i,mlx.cr->rgb[i]);
+			i++;
+		}
+		mlx.cr = mlx.cr->next;
+	}
+}
+
 
 
