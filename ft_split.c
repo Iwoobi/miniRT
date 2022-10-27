@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:47:26 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/10/26 15:48:21 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 17:15:34 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static char	*ft_second_malloc(char const *str2, char c, char **str, int i)
 				str2++;
 			if (*str2 != *str1)
 			{
-				str[i] = (char *)malloc(sizeof(char) * (str2 - str1 + 1));
+				str[i] = (char *)ft_calloc(sizeof(char), (str2 - str1 + 1));
 				if (str[i] == NULL)
 					return (str[i]);
 				str1 = (char const *)ft_copy(str2, str1, str[i]);

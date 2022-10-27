@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:48:11 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:27:23 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,12 @@ typedef struct s_img
 	int		h;
 	int		w;
 }	t_img;
+
+typedef struct s_xpm
+{
+	t_img	img;
+	t_img	normal;
+}	t_xpm;
 /*데이터*/
 
 typedef struct s_plane
@@ -61,6 +67,7 @@ typedef struct s_plane
 	double			u[2];
 	t_texture		mode;
 	unsigned char	rgb[3];
+	t_xpm			xpm;
 	struct s_plane	*next;
 }	t_plane;
 
@@ -72,6 +79,7 @@ typedef struct s_sphere
 	double			r;
 	t_texture		mode;
 	unsigned char	rgb[3];
+	t_xpm			xpm;
 	struct s_sphere	*next;
 }	t_sphere;
 
@@ -87,6 +95,7 @@ typedef struct s_cylinder
 	double				nc[3];
 	t_texture			mode;
 	unsigned char		rgb[3];
+	t_xpm				xpm;
 	struct s_cylinder	*next;
 }	t_cylinder;
 
@@ -101,6 +110,7 @@ typedef struct s_cron
 	double			u[2];
 	t_texture		mode;
 	unsigned char	rgb[3];
+	t_xpm			xpm;
 	struct s_cron	*next;
 }	t_cron;
 
@@ -174,7 +184,6 @@ typedef struct s_mlx
 	void	*mlx;
 	void	*win;
 	t_img	img;
-	t_img	xpm;
 	t_ray	**ray;
 	t_data	data;
 	int		size[2];
@@ -190,8 +199,12 @@ void	ft_strcopy2(char *s, char *tmp);
 double	ft_char_double(char *str, int *count);
 int		ft_strlen_2(char *str);
 char	**ft_split(char const *s, char c);
+void	*ft_calloc(size_t nmemb, size_t size);
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
+
+/*pasring*/
+int	check_bump_word(char *str);
 
 /*print*/
 void	test_a(t_data mlx);

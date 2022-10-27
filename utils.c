@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:02:14 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:44:47 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:27:16 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,4 +61,21 @@ void	ft_strcopy2(char *s, char *tmp)
 		i++;
 	}
 	s[i] = '\0';
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	size_t	i;
+
+	i = 0;
+	ptr = malloc(nmemb * size);
+	if (!ptr)
+		return (0);
+	else
+	{
+		while (i < nmemb * size)
+			((unsigned char *)ptr)[i++] = 0;
+		return (ptr);
+	}
 }

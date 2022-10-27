@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 15:52:48 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 18:16:59 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,27 +37,33 @@ void	print_rot_data(t_mdata data)
 
 void	print_error(char *str)
 {
-	write(1, str, ft_strlen(str));
-	write(1, "\n", 1);
+	write(STDERR_FILENO, str, ft_strlen(str));
+	write(STDERR_FILENO, "\n", 1);
 	exit(-1);
 }
 
-void	check_filename(char *argv)
+void	check_format(char *argv, char *format)
 {
 	int	i;
+	int	j;
+	int	cnt;
 
 	i = 0;
+	j = 0;
+	cnt = 0;
 	while (argv[i])
 		i++;
+	while (format[j])
+		j++;
 	i--;
-	if (argv[i] != 't')
-		print_error("check file name");
-	i--;
-	if (argv[i] != 'r')
-		print_error("check file name");
-	i--;
-	if (argv[i] != '.')
-		print_error("check file name");
+	j--;
+	while (cnt <= j)
+	{
+		if (argv[i] != format[j - cnt])
+			print_error("check file name");
+		i--;
+		cnt++;
+	}
 }
 
 int	opne_data(char *argv)
@@ -107,11 +113,67 @@ void	push_x_y_z(double *data, char **str)
 	}
 }
 
-t_texture	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
+void	open_xpm_file(t_img *img, char *file_name, t_mlx *mlx)
+{
+	img->img = mlx_xpm_file_to_image(mlx->mlx, file_name, \
+										&(img->w), &(img->h));
+	if (img->img == NULL)
+		print_error("couldn't open xpm file.");
+	img->data = (int *)mlx_get_data_addr(img->img, &img->bpp, \
+											&img->size_l, &img->endian);
+}
+
+void	remove_newline(char *file_name)
+{
+	int	i;
+
+	i = 0;
+	while (file_name[i])
+		i++;
+	if (file_name[i - 1] == '\n')
+		file_name[i - 1] = '\0';
+}
+
+int	check_file_number(char **file_name)
+{
+	int	cnt;
+
+	cnt = 0;
+	while (file_name[cnt])
+		cnt++;
+	if (cnt == 3)
+	{
+		remove_newline(file_name[2]);
+		return (1);
+	}
+	return (0);
+}
+
+t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx)
+{
+	char	**file_name;
+
+	file_name = ft_split(*str, ' ');
+	if (file_name == NULL)
+		print_error("malloc error.");
+	if (file_name[1] == NULL || file_name[2] == NULL)
+		print_error("need both image and normal file.");
+	if (!check_file_number(file_name))
+		print_error("need only two files.");
+	check_format(file_name[1], ".xpm");
+	check_format(file_name[2], ".xpm");
+	open_xpm_file(&(xpm->img), file_name[1], mlx);
+	open_xpm_file(&(xpm->normal), file_name[2], mlx);
+	while (**str != '\n' && **str != '\0')
+		(*str)++;
+	return (BUMP);
+
+}
+
+t_texture	push_rgb(unsigned char *rgb, char **str)
 {
 	int	i;
 	int	count;
-	char	*filename;
 
 	i = 0;
 	count = 0;
@@ -124,23 +186,6 @@ t_texture	push_rgb(unsigned char *rgb, char **str, t_mlx *mlx)
 	{
 		*str += 7;
 		return (CHECKER);
-	}
-	if (div_str(*str, "bump") == 1)
-	{
-		char **file;
-		file = ft_split(*str, ' ');
-		if (file == NULL)
-			print_error("malloc error.");
-		mlx->xpm.img = mlx_xpm_file_to_image(mlx->mlx, file[0], &(mlx->xpm.w), &(mlx->xpm.h));
-		free(filename);
-		if (mlx->xpm.img == NULL)
-		{
-			print_error("couldn't open xpm file.");
-		}
-		mlx->xpm.data = (int *)mlx_get_data_addr(mlx->xpm.img, &mlx->xpm.bpp, &mlx->xpm.size_l, &mlx->xpm.endian);
-		while (**str != ' ' && **str != '\0')
-			(*str)++;
-		return (BUMP);
 	}
 	while (i < 3)
 	{
@@ -191,7 +236,7 @@ void	push_a(char *str, t_mlx *mlx)
 	mlx->data.num.count_al += 1;
 	mlx->data.al->ratio = ft_char_double(str, &count);
 	str += count;
-	push_rgb(&(mlx->data.al->rgb[0]), &str, mlx);
+	push_rgb(&(mlx->data.al->rgb[0]), &str);
 	null_check(str);
 	mlx->data.al = save;
 }
@@ -251,7 +296,7 @@ void	push_l(char *str, t_mlx *mlx)
 	push_x_y_z(&(mlx->data.l->x[0]), &str);
 	mlx->data.l->ratio = ft_char_double(str, &count);
 	str += count;
-	push_rgb(&(mlx->data.l->rgb[0]), &str, mlx);
+	push_rgb(&(mlx->data.l->rgb[0]), &str);
 	null_check(str);
 	mlx->data.l = save;
 }
@@ -281,9 +326,22 @@ void	push_sp(char *str, t_mlx *mlx)
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
 	mlx->data.sp->r = ft_char_double(str, &count);
 	str += count;
-	mlx->data.sp->mode = push_rgb(&(mlx->data.sp->rgb[0]), &str, mlx);
+	if (check_bump_word(str) == 1)
+		mlx->data.sp->mode = push_xpm(&(mlx->data.sp->xpm), &str, mlx);
+	else
+		mlx->data.sp->mode = push_rgb(&(mlx->data.sp->rgb[0]), &str);
 	null_check(str);
 	mlx->data.sp = save;
+}
+
+int	check_bump_word(char *str)
+{
+	int	i;
+
+	i = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	return (div_str(&(str[i]),"bump"));
 }
 
 void	push_pl(char *str, t_mlx *mlx)
@@ -310,7 +368,10 @@ void	push_pl(char *str, t_mlx *mlx)
 	mlx->data.num.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
 	push_x_y_z(&(mlx->data.pl->n[0]), &str);
-	mlx->data.pl->mode = push_rgb(&(mlx->data.pl->rgb[0]), &str, mlx);
+	if (check_bump_word(str) == 1)
+		mlx->data.pl->mode = push_xpm(&(mlx->data.pl->xpm), &str, mlx);
+	else
+		mlx->data.pl->mode = push_rgb(&(mlx->data.pl->rgb[0]), &str);
 	null_check(str);
 	mlx->data.pl = save;
 }
@@ -349,7 +410,10 @@ void	push_cy(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.cy->h = ft_char_double(str, &count);
 	str += count;
-	mlx->data.cy->mode = push_rgb(&(mlx->data.cy->rgb[0]), &str, mlx);
+	if (check_bump_word(str) == 1)
+		mlx->data.cy->mode = push_xpm(&(mlx->data.cy->xpm), &str, mlx);
+	else
+		mlx->data.cy->mode = push_rgb(&(mlx->data.cy->rgb[0]), &str);
 	null_check(str);
 	mlx->data.cy = save;
 }
@@ -383,7 +447,10 @@ void	push_cr(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.cr->h = ft_char_double(str, &count);
 	str += count;
-	mlx->data.cr->mode = push_rgb(&(mlx->data.cr->rgb[0]), &str, mlx);
+	if (check_bump_word(str) == 1)
+		mlx->data.cr->mode = push_xpm(&(mlx->data.cr->xpm), &str, mlx);
+	else
+		mlx->data.cr->mode = push_rgb(&(mlx->data.cr->rgb[0]), &str);
 	null_check(str);
 	mlx->data.cr = save;
 }
@@ -473,7 +540,7 @@ void	check_cam_error(t_mlx *mlx)
 
 void	check_input(char *argv, t_mlx *mlx)
 {
-	check_filename(argv);
+	check_format(argv, ".rt");
 	push_data(opne_data(argv), mlx);
 	close_non_data(mlx);
 	check_cam_error(mlx);
@@ -485,7 +552,6 @@ void	init_mlx_data(t_mlx *mlx)
 	mlx->size[0] = 1600;
 	mlx->size[1] = 900;
 	mlx->cam_num = 0;
-	mlx->xpm.img = NULL;
 	mlx->data.num.count_l = 0;
 	mlx->data.num.count_al = 0;
 	mlx->data.num.count_cam = 0;
@@ -1071,32 +1137,11 @@ void	normal_vector_sp(t_mlx *mlx, double	*d, int i, int j)
 	mlx->ray[i][j].n[2] = x[2];
 }
 
-void	color_val(t_mlx *mlx, unsigned int *rgb, t_obj obj)
+void	color_val(unsigned int *rgb, unsigned char *obj_rgb)
 {
-	if (obj == PL)
-	{
-		rgb[0] = mlx->data.pl->rgb[0];
-		rgb[1] = mlx->data.pl->rgb[1];
-		rgb[2] = mlx->data.pl->rgb[2];
-	}
-	else if (obj == CY)
-	{
-		rgb[0] = mlx->data.cy->rgb[0];
-		rgb[1] = mlx->data.cy->rgb[1];
-		rgb[2] = mlx->data.cy->rgb[2];
-	}
-	else if (obj == SP)
-	{
-		rgb[0] = mlx->data.sp->rgb[0];
-		rgb[1] = mlx->data.sp->rgb[1];
-		rgb[2] = mlx->data.sp->rgb[2];
-	}
-	else if (obj == CR)
-	{
-		rgb[0] = mlx->data.cr->rgb[0];
-		rgb[1] = mlx->data.cr->rgb[1];
-		rgb[2] = mlx->data.cr->rgb[2];
-	}
+		rgb[0] = obj_rgb[0];
+		rgb[1] = obj_rgb[1];
+		rgb[2] = obj_rgb[2];
 }
 
 void	hex_to_rgb(int hex, unsigned int *rgb)
@@ -1108,42 +1153,54 @@ void	hex_to_rgb(int hex, unsigned int *rgb)
 	rgb[0] = hex;
 }
 
-void	xpm_color_select(t_mlx *mlx, unsigned int *rgb)
+void	xpm_color_select_sp(t_sphere *sp, unsigned int *rgb)
 {
 	double	i;
 	double	j;
 
-	i = (mlx->data.sp->u[0]) / (M_PI);
-	j = (mlx->data.sp->u[1]) / (M_PI);
-	hex_to_rgb(mlx->xpm.data[(int)(i * mlx->xpm.w) + mlx->xpm.w * (int)(j * mlx->xpm.h)], rgb);
+	i = (sp->u[0]) / (M_PI);
+	j = (sp->u[1]) / (M_PI);
+	hex_to_rgb(sp->xpm.img.data[(int)(i * sp->xpm.img.w) + sp->xpm.img.w * (int)(j * sp->xpm.img.h)], rgb);
 }
 
 void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 {
-	color_val(mlx, rgb, obj);
 	if (obj == PL)
 	{
-		if (mlx->data.pl->mode == CHECKER)
+		if (mlx->data.pl->mode == NONE)
+			color_val(rgb, mlx->data.pl->rgb);
+		else if (mlx->data.pl->mode == CHECKER)
 			checker_board(mlx->data.pl->u, rgb);
+		// 각 물체마다 다른 함수 필요
+		else if (mlx->data.pl->mode == BUMP)
+			xpm_color_select_sp(mlx->data.sp, rgb);
 	}
 	else if (obj == CY)
 	{
-		if (mlx->data.cy->mode == CHECKER)
+		if (mlx->data.cy->mode == NONE)
+			color_val(rgb, mlx->data.cy->rgb);
+		else if (mlx->data.cy->mode == CHECKER)
 			checker_board(mlx->data.cy->u, rgb);
+		else if (mlx->data.cy->mode == BUMP)
+			xpm_color_select_sp(mlx->data.sp, rgb);
 	}
 	else if (obj == SP)
 	{
-		if (mlx->data.sp->mode == CHECKER)
+		if (mlx->data.sp->mode == NONE)
+			color_val(rgb, mlx->data.sp->rgb);
+		else if (mlx->data.sp->mode == CHECKER)
 			checker_board(mlx->data.sp->u, rgb);
 		else if (mlx->data.sp->mode == BUMP)
-			xpm_color_select(mlx, rgb);
+			xpm_color_select_sp(mlx->data.sp, rgb);
 	}
 	else if (obj == CR)
 	{
-		if (mlx->data.cr->mode == CHECKER)
+		if (mlx->data.cr->mode == NONE)
+			color_val(rgb, mlx->data.cr->rgb);
+		else if (mlx->data.cr->mode == CHECKER)
 			checker_board(mlx->data.cr->u, rgb);
 		else if (mlx->data.cr->mode == BUMP)
-			xpm_color_select(mlx, rgb);
+			xpm_color_select_sp(mlx->data.sp, rgb);
 	}
 }
 
@@ -1734,7 +1791,7 @@ int	loop_main(t_mlx *mlx)
 
 	// test(mlx->data);
 
-	ctest(mlx->data);
+	// ctest(mlx->data);
 	copy_rot_data(mlx);
 	rot = data_cam_num_init(*mlx);
 	// print_rot_data(rot_data);
