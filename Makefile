@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
+#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/10/24 20:59:22 by youhan           ###   ########.fr        #
+#    Updated: 2022/10/27 14:32:21 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ CC = gcc -g
 NAME = a.out
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
-SRCS = main.c char_double.c get_next_line.c get_next_line_utils.c mlx_init.c triangle.c utils.c print.c
+SRCS = main.c char_double.c get_next_line.c get_next_line_utils.c mlx_init.c triangle.c utils.c print.c ft_split.c
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
 

@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 19:02:14 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/26 01:00:14 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/27 15:27:16 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,40 @@ void	ft_strcopy(char *s, char *tmp)
 	int	i;
 
 	i = 0;
+	while (tmp[i] != '\0' && tmp[i] != ' ')
+	{
+		s[i] = tmp[i];
+		i++;
+	}
+	s[i] = '\0';
+}
+
+void	ft_strcopy2(char *s, char *tmp)
+{
+	int	i;
+
+	i = 0;
 	while (tmp[i] != '\0' && tmp[i] != '\n')
 	{
 		s[i] = tmp[i];
 		i++;
 	}
 	s[i] = '\0';
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	size_t	i;
+
+	i = 0;
+	ptr = malloc(nmemb * size);
+	if (!ptr)
+		return (0);
+	else
+	{
+		while (i < nmemb * size)
+			((unsigned char *)ptr)[i++] = 0;
+		return (ptr);
+	}
 }
