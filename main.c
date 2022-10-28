@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/27 23:02:37 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/28 17:30:11 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -425,7 +425,7 @@ void	push_cr(char *str, t_mlx *mlx)
 
 	save = mlx->data.cr;
 	count = 0;
-	str += 4;
+	str += 2;
 	while (mlx->data.num.count_cr > count)
 	{
 		if (mlx->data.num.count_cr - count == 1)
@@ -661,9 +661,11 @@ double	equation_d(double a, double b, double c)
 	return(pow_2(b) - 4 * (a * c));
 }
 
-double	find_f(double a, double b, double c)
+double	find_f(double a, double b, double c, double flag)
 {
-	return ((-b - sqrt(equation_d(a, b, c))) / (2 * a));
+	if (flag > 0)
+		return ((-b - sqrt(equation_d(a, b, c))) / (2 * a));
+	return ((-b + sqrt(equation_d(a, b, c))) / (2 * a));
 }
 
 void	 rot_matrix(double *x, double *y, double *z, double *result)
@@ -709,11 +711,11 @@ int	rot_data_check(t_cam cam)
 
 void	rot_non_data_push(t_cam cam, t_mdata *data)
 {
-	data->rot[0] = 1;
+	data->rot[0] = cam.n[2] / sqrt(cam.n[2] * cam.n[2]);;
 	data->rot[1] = 0;
 	data->rot[2] = 0;
 	data->rot[3] = 0;
-	data->rot[4] = 1;
+	data->rot[4] = cam.n[2] / sqrt(cam.n[2] * cam.n[2]);;
 	data->rot[5] = 0;
 	data->rot[6] = 0;
 	data->rot[7] = 0;
@@ -836,9 +838,7 @@ void	updata_rot_cr(t_data *data, t_mdata mdata)
 		data->cr->cc[1] -= mdata.m[1];
 		data->cr->cc[2] -= mdata.m[2];
 		trans_rot_data(data->cr->cc, mdata);
-		printf("\n\n\n\n\n\n\n\n\n  %f %f %f \n\n\n\n\n\n\n\n", data->cr->cc[0],data->cr->cc[1],data->cr->cc[2] );
-		trans_rot_data(data->cr->nc, mdata); 
-		printf("\n\n\n\n\n\n\n\n\n  %f %f %f \n\n\n\n\n\n\n\n", data->cr->nc[0],data->cr->nc[1],data->cr->nc[2] );
+		trans_rot_data(data->cr->nc, mdata);
 		data->cr = data->cr->next;
 	}
 	data->cr = save;
@@ -992,7 +992,7 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 	a = equation_d(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
 	if (a >= 0.000001)
 	{
-		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
+		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r, 1);
 		if (mlx->t < 0.000001)
 		{
 			mlx->t = -2;
@@ -1075,7 +1075,7 @@ int	check_hit_side_cy_d(double *d, double *n, double *c, t_mlx *mlx)
 	a = equation_d(pow_2(vector_size(result2)), -2 * inner_product(result1, result2), pow_2(vector_size(result1)) - r * r);
 	if (a >= 0.000001)
 	{
-		mlx->t = find_f(pow_2(vector_size(result2)), -2 * inner_product(result1, result2), pow_2(vector_size(result1)) - r * r);
+		mlx->t = find_f(pow_2(vector_size(result2)), -2 * inner_product(result1, result2), pow_2(vector_size(result1)) - r * r, 1);
 		if (inner_product(d, n) * mlx->t - inner_product(c, n) <= mlx->data.cy->h)
 		{
 			if (inner_product(d, n) * mlx->t - inner_product(c, n) >= 0.000001)
@@ -1296,17 +1296,17 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	a[0] = pow_2(inner_product(d, n)) - val * pow_2(vector_size(d));
 	a[1] = 2 * (val * inner_product(head, d) - (inner_product(d, n) * inner_product(head, n)));
 	a[2] = pow_2(inner_product(head, n)) - val * pow_2(vector_size(head));
-	if (equation_d(a[0], a[1], a[2]) < 0)
+	if (equation_d(a[0], a[1], a[2]) < 0.000001)
 		return ;
-	if (find_f(a[0], a[1], a[2]) < 0)
+	if (find_f(a[0], a[1], a[2], a[0]) < 0.000001)
 		return ;
-	vector_n(d, find_f(a[0], a[1], a[2]), dot);
-	vector_minus(dot, head, dot);
-	if (-1 * inner_product(dot, n) <= mlx->data.cr->h)
+	vector_n(d, find_f(a[0], a[1], a[2], a[0]), dot);
+	vector_minus(dot, c, dot);
+	if (inner_product(dot, n) < mlx->data.cr->h)
 	{
-		if (-1 * inner_product(dot, n) > 0)
+		if (inner_product(dot, n) > 0)
 		{
-			mlx->t = find_f(a[0], a[1], a[2]);
+			mlx->t = find_f(a[0], a[1], a[2], a[0]);
 			mlx->flag = 1;
 		}
 	}
@@ -1321,12 +1321,12 @@ void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 		return ;
 	t = inner_product(c, n) / inner_product(d, n);
 	vector_n(d ,t, vec);
-	if (t < 0.000001)
+	if (t < 0)
 		return ;
 	vector_minus(vec, c, vec);
 	if (vector_size(vec) <= mlx->data.cr->r)
 	{
-		if (mlx->t > t || mlx->t < 0.000001)
+		if (mlx->t > t || mlx->t < 0)
 		{
 			mlx->t = t;
 			mlx->flag = 2;
@@ -1358,19 +1358,10 @@ void	normal_vector_side_cr(t_mlx *mlx, int i, int j)
 
 void	normal_vector_cr(t_mlx *mlx, int i, int j)
 {
-	if (mlx->data.cr->mode != BUMP)
-		if (mlx->flag == 2)
-			vector_n(mlx->data.cr->nc, -1, mlx->ray[i][j].n);
-		else if (mlx->flag == 1)
-			normal_vector_side_cr(mlx, i, j);
-	else
-	{
-		mlx->data.cr->xmp.normal.data[i, w*j ] --> rgb;
-		vector_n(rgb, 2, mlx->ray[i][j].n);
-		mlx->ray[i][j].n[0] -= 1;
-		mlx->ray[i][j].n[1] -= 1;
-		mlx->ray[i][j].n[2] -= 1;
-	}
+	if (mlx->flag == 2)
+		vector_n(mlx->data.cr->nc, -1, mlx->ray[i][j].n);
+	else if (mlx->flag == 1)
+		normal_vector_side_cr(mlx, i, j);
 }
 
 void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
@@ -1383,7 +1374,7 @@ void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
 		normalize_vector(mlx->data.cr->nc);
 		if (check_hit_cr_d(d, mlx->data.cr->nc, mlx->data.cr->cc, mlx) != 0)
 		{
-			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0.000001)
+			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, CR);
@@ -1442,7 +1433,7 @@ void	hit_point(t_mlx *mlx, int i, int j)
 	check_hit_sp(mlx, d, i, j);
 	check_hit_cy(mlx, d, i, j);
 	check_hit_pl(mlx, d, i, j);
-	check_hit_cr(mlx, d, i, j);
+	check_hit_cr(mlx, d, i, j); 
 }
 
 void	canvas_match(t_mlx *mlx)
@@ -1664,7 +1655,7 @@ int	check_hit_gray_cy_side_d(double *d, double *dot, t_mlx *mlx)
 	t = mlx->data.cy->r;
 	if (equation_d(pow_2(vector_size(cross_d_n)), 2 * inner_product(cross_dot_c_n, cross_d_n), pow_2(vector_size(cross_dot_c_n)) - pow_2(t)) < 0)
 		return (0);
-	t = find_f(pow_2(vector_size(cross_d_n)), 2 * inner_product(cross_dot_c_n, cross_d_n), pow_2(vector_size(cross_dot_c_n)) - pow_2(t));
+	t = find_f(pow_2(vector_size(cross_d_n)), 2 * inner_product(cross_dot_c_n, cross_d_n), pow_2(vector_size(cross_dot_c_n)) - pow_2(t), 1);
 	if (t < 0.00000001)
 		return (0);
 	if (inner_product(d, mlx->data.cy->nc) * t + inner_product(vec, mlx->data.cy->nc) < mlx->data.cy->h)
@@ -1740,6 +1731,84 @@ int	check_hit_gray_pl(t_mlx *mlx, int i, int j)
 	return (0);
 }
 
+int	check_hit_gray_cr_bot_d(double *d, double *dot, t_mlx *mlx)
+{
+	double	vec[3];
+	double	t;
+
+	vector_minus(mlx->data.cr->cc, dot, vec);
+	if (inner_product(d, mlx->data.cr->nc) < 0.000001)
+		return (0);
+	t = inner_product(vec, mlx->data.cr->nc) / inner_product(d, mlx->data.cr->nc);
+	if (t < 0.000001)
+		return (0);
+	vector_n(d, t, vec);
+	vector_plus(vec, dot, vec);
+	vector_minus(vec, mlx->data.cr->cc, vec);
+	if (vector_size(vec) > mlx->data.cr->r)
+		return (0);
+	return (1);	
+}
+
+int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
+{
+	double	head[3];
+	double	vec[3];
+	double	a[3];
+	double	val;
+
+	find_cron_head(mlx->data.cr->nc, mlx->data.cr->h, mlx->data.cr->cc, head);
+	vector_minus(head, dot, head);
+	val = (pow_2(mlx->data.cr->h) / (pow_2(mlx->data.cr->h) + pow_2(mlx->data.cr->r)));
+	a[0] = pow_2(inner_product(d, mlx->data.cr->nc)) - val * pow_2(vector_size(d));
+	a[1] = 2 * (val * inner_product(head, d) - (inner_product(d, mlx->data.cr->nc) * inner_product(head, mlx->data.cr->nc)));
+	a[2] = pow_2(inner_product(head, mlx->data.cr->nc)) - val * pow_2(vector_size(head));
+	if (equation_d(a[0], a[1], a[2]) < 0)
+		return (0);
+	if (find_f(a[0], a[1], a[2], a[0]) < 0)
+		return (0);
+	vector_n(d, find_f(a[0], a[1], a[2], a[0]), vec);
+	vector_plus(vec, dot, vec);
+	vector_minus(vec, mlx->data.cr->cc, vec);
+	if (inner_product(vec, mlx->data.cr->nc) < mlx->data.cr->h)
+	{
+		if (inner_product(vec, mlx->data.cr->nc) > 0)
+			return (1);
+	}
+	return (0);
+}
+
+int	check_hit_gray_cr_d(double *d, double *dot, t_mlx *mlx)
+{
+	if (check_hit_gray_cr_bot_d(d, dot, mlx) == 1)
+		return (1);
+	else if (check_hit_gray_cr_side_d(d, dot, mlx) == 1)
+		return (1);
+	return (0);
+}
+
+int	check_hit_gray_cr(t_mlx *mlx, int i, int j)
+{
+	t_cron	*save;
+	double	light[3];
+
+	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
+	normalize_vector(light);
+	save = mlx->data.cr;
+	while (mlx->data.cr != NULL)
+	{
+		if (check_hit_gray_cr_d(light, mlx->ray[i][j].dot, mlx) == 1)
+		{
+			mlx->data.cr = save;
+			return (1);
+		}
+		mlx->data.cr = mlx->data.cr->next;
+	}
+	mlx->data.cr = save;
+	return (0);
+}
+
+
 void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
 {
 	if (check_hit_gray_sp(mlx, i, j) == 1)
@@ -1747,6 +1816,8 @@ void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
 	else if (check_hit_gray_pl(mlx, i, j) == 1)
 		reset_phong_light(phong);
 	else if (check_hit_gray_cy(mlx, i, j) == 1)
+		reset_phong_light(phong);
+	else if (check_hit_gray_cr(mlx, i, j) == 1)
 		reset_phong_light(phong);
 }
 
