@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 03:37:48 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 03:44:16 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1001,8 +1001,8 @@ void	uv_axis_sp(double *d, t_mlx *mlx)
 	x[2] /= size;
 	mlx->data.sp->u[0] = (atan2(-1 * x[2], x[0]) + M_PI) / (2 * M_PI);
 	mlx->data.sp->u[1] = acos(-1 * x[1]) / (M_PI);
-	mlx->data.sp->checker_u[0] = 2 * mlx->data.sp->r * mlx->data.sp->u[0];
-	mlx->data.sp->checker_u[1] = mlx->data.sp->r * mlx->data.sp->u[1];
+	mlx->data.sp->checker_u[0] = 8 * mlx->data.sp->r * mlx->data.sp->u[0];
+	mlx->data.sp->checker_u[1] = 4 * mlx->data.sp->r * mlx->data.sp->u[1];
 }
 
 int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
