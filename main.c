@@ -6,11 +6,29 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 03:44:16 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 07:29:16 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+void	hex_to_rgb(int hex, unsigned int *rgb)
+{
+	rgb[2] = hex % 256;
+	hex /= 256;
+	rgb[1] = hex % 256;
+	hex /= 256;
+	rgb[0] = hex;
+}
+
+void	hex_to_rgb_double(int hex, double *rgb)
+{
+	rgb[2] = hex % 256;
+	hex /= 256;
+	rgb[1] = hex % 256;
+	hex /= 256;
+	rgb[0] = hex;
+}
 
 void	print_rot_data(t_mdata data)
 {
@@ -301,6 +319,16 @@ void	push_l(char *str, t_mlx *mlx)
 	mlx->data.l = save;
 }
 
+int	check_bump_word(char *str)
+{
+	int	i;
+
+	i = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	return (div_str(&(str[i]),"bump"));
+}
+
 void	push_sp(char *str, t_mlx *mlx)
 {
 	int			count;
@@ -332,16 +360,6 @@ void	push_sp(char *str, t_mlx *mlx)
 		mlx->data.sp->mode = push_rgb(&(mlx->data.sp->rgb[0]), &str);
 	null_check(str);
 	mlx->data.sp = save;
-}
-
-int	check_bump_word(char *str)
-{
-	int	i;
-
-	i = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	return (div_str(&(str[i]),"bump"));
 }
 
 void	push_pl(char *str, t_mlx *mlx)
@@ -1028,6 +1046,101 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 	return (0);
 }
 
+void	push_normal_bump(double rot[3][3], double *x, double *y, double *z)
+{
+	rot[0][0] = x[0];
+	rot[0][1] = y[0];
+	rot[0][2] = z[0];
+	rot[1][0] = x[1];
+	rot[1][1] = y[1];
+	rot[1][2] = z[1];
+	rot[2][0] = x[2];
+	rot[2][1] = y[2];
+	rot[2][2] = z[2];
+}
+
+void	bump_rot_data_init(double rot[3][3], double *n)
+{
+	double	vec_y[3];
+	double	vec_x[3];
+	double	z[3];
+
+	axis_z(z);
+	cross_product(n, z, vec_y);
+	cross_product(vec_y, n, vec_x);
+	if (vector_size(vec_y) == 0)
+	{
+		axis_y(vec_y);
+		axis_x(vec_x);
+		if (inner_product(n, z) < 0)
+		{
+			vector_n(vec_y, -1, vec_y);
+			vector_n(vec_x, -1, vec_x);
+		}
+	}
+	else
+	{
+		normalize_vector(vec_y);
+		normalize_vector(vec_x);
+	}
+	push_normal_bump(rot, vec_x, vec_y, n);
+}
+
+void	updata_normal_vector(double *u, t_img n, double rot[3][3], double *result)
+{
+	double	vec[3];
+	int		i;
+	int		j;
+
+	i = u[0] * n.w;
+	j = u[1] * n.h;
+
+	hex_to_rgb_double(n.data[i + n.w * j], &(vec[0]));
+	printf("vec : %f, %f, %f\n", vec[0], vec[1], vec[2]);
+	vector_n(vec, 2, vec);
+	
+	vec[1] /= 255;
+	vec[0] /= 255;
+	vec[2] /= 255;
+	vec[0] -= 1;
+	vec[1] -= 1;
+	vec[2] -= 1;
+	result[0] = inner_product(rot[0], vec);
+	result[1] = inner_product(rot[1], vec);
+	result[2] = inner_product(rot[2], vec);
+}
+
+void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj)
+{
+	double	rot[3][3];
+
+	bump_rot_data_init(rot, mlx->ray[i][j].n);
+	if (obj == SP)
+	{
+		if (mlx->data.sp->mode != BUMP)
+			return ;
+		updata_normal_vector(mlx->data.sp->u, mlx->data.sp->xpm.img, rot, mlx->ray[i][j].n);
+	}
+	else if (obj == CY)
+	{
+		if (mlx->data.cy->mode != BUMP)
+			return ;
+		updata_normal_vector(mlx->data.cy->u, mlx->data.cy->xpm.img, rot, mlx->ray[i][j].n);
+	}
+	else if (obj == CR)
+	{
+		if (mlx->data.cr->mode != BUMP)
+			return ;
+		updata_normal_vector(mlx->data.cr->u, mlx->data.cr->xpm.img, rot, mlx->ray[i][j].n);
+	}
+	else if (obj == PL)
+	{
+		if (mlx->data.pl->mode != BUMP)
+			return ;
+		updata_normal_vector(mlx->data.pl->u, mlx->data.pl->xpm.img, rot, mlx->ray[i][j].n);
+	}
+}
+
 void	push_uv_pl(t_mlx *mlx, double *d, double *x, double *y)
 {
 	double	dot[3];
@@ -1201,23 +1314,14 @@ void	color_val(unsigned int *rgb, unsigned char *obj_rgb)
 		rgb[2] = obj_rgb[2];
 }
 
-void	hex_to_rgb(int hex, unsigned int *rgb)
+void	xpm_color_select(double *u, unsigned int *rgb, t_img img)
 {
-	rgb[2] = hex % 256;
-	hex /= 256;
-	rgb[1] = hex % 256;
-	hex /= 256;
-	rgb[0] = hex;
-}
+	int	i;
+	int	j;
 
-void	xpm_color_select_sp(t_sphere *sp, unsigned int *rgb)
-{
-	double	i;
-	double	j;
-
-	i = (sp->u[0]) / (M_PI);
-	j = (sp->u[1]) / (M_PI);
-	hex_to_rgb(sp->xpm.img.data[(int)(i * sp->xpm.img.w) + sp->xpm.img.w * (int)(j * sp->xpm.img.h)], rgb);
+	i = u[0] * img.w;
+	j = u[1] * img.h;
+	hex_to_rgb(img.data[i + img.w * j], rgb);
 }
 
 void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
@@ -1229,7 +1333,7 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 		else if (mlx->data.pl->mode == CHECKER)
 			checker_board(mlx->data.pl->checker_u, rgb);
 		else if (mlx->data.pl->mode == BUMP)
-			xpm_color_select_sp(mlx->data.sp, rgb);
+			xpm_color_select(mlx->data.pl->u, rgb, mlx->data.pl->xpm.img);
 	}
 	else if (obj == CY)
 	{
@@ -1238,7 +1342,7 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 		else if (mlx->data.cy->mode == CHECKER)
 			checker_board(mlx->data.cy->checker_u, rgb);
 		else if (mlx->data.cy->mode == BUMP)
-			xpm_color_select_sp(mlx->data.sp, rgb);
+			xpm_color_select(mlx->data.cy->u, rgb, mlx->data.cy->xpm.img);
 	}
 	else if (obj == SP)
 	{
@@ -1247,7 +1351,7 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 		else if (mlx->data.sp->mode == CHECKER)
 			checker_board(mlx->data.sp->checker_u, rgb);
 		else if (mlx->data.sp->mode == BUMP)
-			xpm_color_select_sp(mlx->data.sp, rgb);
+			xpm_color_select(mlx->data.sp->u, rgb, mlx->data.sp->xpm.img);
 	}
 	else if (obj == CR)
 	{
@@ -1256,7 +1360,7 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 		else if (mlx->data.cr->mode == CHECKER)
 			checker_board(mlx->data.cr->checker_u, rgb);
 		else if (mlx->data.cr->mode == BUMP)
-			xpm_color_select_sp(mlx->data.sp, rgb);
+			xpm_color_select(mlx->data.cr->u, rgb, mlx->data.cr->xpm.img);
 	}
 }
 
@@ -1274,6 +1378,7 @@ void	check_hit_sp(t_mlx *mlx, double *d, int i, int j)
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, SP);
 				normal_vector_sp(mlx, d, i, j);
+				normal_vector_bump(mlx, i, j, SP);
 			}
 		}
 		mlx->data.sp = mlx->data.sp->next;
@@ -1325,7 +1430,7 @@ void	push_uv_cy_side(t_mlx *mlx, double *d, double *x, double *y)
 	vector_n(d, mlx->t, vec);
 	vector_minus(vec, mlx->data.cy->cc, vec);
 	mlx->data.cy->u[0] = (atan2(inner_product(vec, y), inner_product(vec, x)) + M_PI) / (2 * M_PI);
-	mlx->data.cy->u[1] = fmod(inner_product(vec, mlx->data.cy->nc), 1);
+	mlx->data.cy->u[1] = fmod(inner_product(vec, mlx->data.cy->nc)/ mlx->data.cy->h, 1);
 	mlx->data.cy->checker_u[0] = mlx->data.cy->r * 17 * M_PI * (atan2(inner_product(vec, x), inner_product(vec, y)) + M_PI) / (2 * M_PI) / mlx->data.cy->h;
 	mlx->data.cy->checker_u[1] = round(fmod(inner_product(vec, mlx->data.cy->nc), 1)) ;
 }
@@ -1347,7 +1452,6 @@ void	push_uv_cy_top(t_mlx *mlx, double *d, double *x, double *y)
 	mlx->data.cy->checker_u[1] = round(fmod(inner_product(y, vec) * 2 / mlx->data.cy->r, 1));
 	if (inner_product(y, vec) < 0)
 		mlx->data.cy->checker_u[1] -= 1;
-	printf("asd\n");
 }
 
 void	push_uv_cy_bot(t_mlx *mlx, double *d, double *x, double *y)
@@ -1416,6 +1520,7 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 					uv_axis_cy(mlx, d);
 				color_select(mlx, mlx->ray[i][j].rgb, CY);
 				normal_vector_cy(mlx, d, i, j);
+				normal_vector_bump(mlx, i, j, CY);
 			}
 		}
 		mlx->data.cy = mlx->data.cy->next;
@@ -1497,7 +1602,7 @@ void	push_uv_cr_side(t_mlx *mlx, double *d, double *x, double *y)
 	vector_n(d, mlx->t, vec);
 	vector_minus(vec, mlx->data.cr->cc, vec);
 	mlx->data.cr->u[0] = (atan2(inner_product(vec, y), inner_product(vec, x)) + M_PI) / (2 * M_PI);
-	mlx->data.cr->u[1] = fmod(inner_product(vec, mlx->data.cr->nc), 1);
+	mlx->data.cr->u[1] = fmod(inner_product(vec, mlx->data.cr->nc) / h, 1);
 	mlx->data.cr->checker_u[0] = mlx->data.cr->r * 4 * (atan2(inner_product(vec, x), inner_product(vec, y)) + M_PI) / (2 * M_PI);
 	mlx->data.cr->checker_u[1] = round(fmod(inner_product(vec, mlx->data.cr->nc) * 3 / h, 1));
 }
@@ -1508,8 +1613,8 @@ void	push_uv_cr_bot(t_mlx *mlx, double *d, double *x, double *y)
 
 	vector_n(d, mlx->t, vec);
 	vector_minus(vec, mlx->data.cr->cc, vec);	
-	mlx->data.cr->u[0] = (fmod(inner_product(x, vec), 1) + 1) / 2;
-	mlx->data.cr->u[1] = (fmod(inner_product(y, vec), 1) + 1) / 2;
+	mlx->data.cr->u[0] = (fmod(inner_product(x, vec), 1) / 2 + 1) / 2;
+	mlx->data.cr->u[1] = (fmod(inner_product(y, vec), 1) / 2 + 1) / 2;
 	mlx->data.cr->checker_u[0] = round(fmod(inner_product(x, vec) * 2 / mlx->data.cr->r, 1));
 	if (inner_product(x, vec) < 0)
 		mlx->data.cr->checker_u[0] -= 1;
@@ -1595,6 +1700,7 @@ void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, CR);
 				normal_vector_cr(mlx, i, j);
+				normal_vector_bump(mlx, i, j, CR);
 			}
 		}
 		mlx->data.cr = mlx->data.cr->next;
@@ -1622,6 +1728,7 @@ void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)
 				mlx->ray[i][j].deep = mlx->t;
 				color_select(mlx, mlx->ray[i][j].rgb, PL);
 				normal_vector_pl(mlx, i, j);
+				normal_vector_bump(mlx, i, j, PL);
 			}
 		}
 		mlx->data.pl = mlx->data.pl->next;
