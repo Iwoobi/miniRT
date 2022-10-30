@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 03:12:37 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 03:37:48 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1435,6 +1435,7 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	double	dot[3];
 	double	a[3];
 	double	val;
+	int		i;
 
 	mlx->t = -2;
 	find_cron_head(n, mlx->data.cr->h, c, head);
@@ -1444,18 +1445,24 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	a[2] = pow_2(inner_product(head, n)) - val * pow_2(vector_size(head));
 	if (equation_d(a[0], a[1], a[2]) < 0)
 		return ;
-	if (find_f(a[0], a[1], a[2], inner_product(mlx->data.cr->nc, d)) < 0)
-		return ;
-	vector_n(d, find_f(a[0], a[1], a[2],inner_product(mlx->data.cr->nc, d)), dot);
-	vector_minus(dot, c, dot);
-	if (inner_product(dot, n) < mlx->data.cr->h)
+	i = 2;
+	while (i > 0)
 	{
-		if (inner_product(dot, n) > 0)
+		if (find_f(a[0], a[1], a[2], 2 * i - 3) >= 0)
 		{
-			if (mlx->t > find_f(a[0], a[1], a[2], inner_product(mlx->data.cr->nc, d)) || mlx->t < 0)
-				mlx->t = find_f(a[0], a[1], a[2], inner_product(mlx->data.cr->nc, d));
-			mlx->flag = 1;
+			vector_n(d, find_f(a[0], a[1], a[2], 2 * i - 3), dot);
+			vector_minus(dot, c, dot);
+			if (inner_product(dot, n) < mlx->data.cr->h)
+			{
+				if (inner_product(dot, n) > 0)
+				{
+					if (mlx->t > find_f(a[0], a[1], a[2], 2 * i - 3) || mlx->t < 0)
+						mlx->t = find_f(a[0], a[1], a[2], 2 * i - 3);
+					mlx->flag = 1;
+				}
+			}
 		}
+		i--;
 	}
 }
 
@@ -1942,6 +1949,7 @@ int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
 	double	vec[3];
 	double	a[3];
 	double	val;
+	int		k;
 
 	find_cron_head(mlx->data.cr->nc, mlx->data.cr->h, mlx->data.cr->cc, head);
 	vector_minus(head, dot, head);
@@ -1951,15 +1959,21 @@ int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
 	a[2] = pow_2(inner_product(head, mlx->data.cr->nc)) - val * pow_2(vector_size(head));
 	if (equation_d(a[0], a[1], a[2]) < 0)
 		return (0);
-	if (find_f(a[0], a[1], a[2], inner_product(d, mlx->data.cr->nc)) < 0.0001)
-		return (0);
-	vector_n(d, find_f(a[0], a[1], a[2], inner_product(d, mlx->data.cr->nc)), vec);
-	vector_plus(vec, dot, vec);
-	vector_minus(vec, mlx->data.cr->cc, vec);
-	if (inner_product(vec, mlx->data.cr->nc) < mlx->data.cr->h)
+	k = 2;
+	while (k > 0)
 	{
-		if (inner_product(vec, mlx->data.cr->nc) > 0)
-			return (1);
+		if (find_f(a[0], a[1], a[2], 2 * k - 3) > 0.001)
+		{
+			vector_n(d, find_f(a[0], a[1], a[2], 2 * k - 3), vec);
+			vector_plus(vec, dot, vec);
+			vector_minus(vec, mlx->data.cr->cc, vec);
+			if (inner_product(vec, mlx->data.cr->nc) < mlx->data.cr->h)
+			{
+				if (inner_product(vec, mlx->data.cr->nc) > 0)
+					return (1);
+			}
+		}
+		k--;
 	}
 	return (0);
 }
