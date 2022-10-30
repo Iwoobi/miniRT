@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/28 16:07:14 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 00:20:35 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define _USE_MATH_DEFINES
 # define PRESS 2
 # define CLOSED 17
+# define EPSILON 1e-300
 
 # include <stdio.h>
 # include "get_next_line.h"
@@ -65,6 +66,7 @@ typedef struct s_plane
 	double			xc[3];
 	double			nc[3];
 	double			u[2];
+	double			checker_u[2];
 	t_texture		mode;
 	unsigned char	rgb[3];
 	t_xpm			xpm;
@@ -76,6 +78,7 @@ typedef struct s_sphere
 	double			c[3];
 	double			cc[3];
 	double			u[2];
+	double			checker_u[2];
 	double			r;
 	t_texture		mode;
 	unsigned char	rgb[3];
@@ -91,6 +94,7 @@ typedef struct s_cylinder
 	double				h;
 	double				r;
 	double				u[2];
+	double				checker_u[2];
 	double				n[3];
 	double				nc[3];
 	t_texture			mode;
@@ -108,6 +112,7 @@ typedef struct s_cron
 	double			nc[3];
 	double			r;
 	double			u[2];
+	double			checker_u[2];
 	t_texture		mode;
 	unsigned char	rgb[3];
 	t_xpm			xpm;
@@ -177,6 +182,7 @@ typedef struct s_ray
 	double			dot[3];
 	double			d[3];
 	unsigned int	rgb[3];
+	unsigned int	sum_rgb[3];
 }	t_ray;
 
 typedef struct s_mlx
