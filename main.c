@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 07:29:16 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 13:39:33 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1096,12 +1096,10 @@ void	updata_normal_vector(double *u, t_img n, double rot[3][3], double *result)
 	j = u[1] * n.h;
 
 	hex_to_rgb_double(n.data[i + n.w * j], &(vec[0]));
-	printf("vec : %f, %f, %f\n", vec[0], vec[1], vec[2]);
+	vec[1] = vec[1] / 255;
+	vec[0] = vec[0] / 255;
+	vec[2] = vec[2] / 255;
 	vector_n(vec, 2, vec);
-	
-	vec[1] /= 255;
-	vec[0] /= 255;
-	vec[2] /= 255;
 	vec[0] -= 1;
 	vec[1] -= 1;
 	vec[2] -= 1;
@@ -1119,25 +1117,26 @@ void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj)
 	{
 		if (mlx->data.sp->mode != BUMP)
 			return ;
-		updata_normal_vector(mlx->data.sp->u, mlx->data.sp->xpm.img, rot, mlx->ray[i][j].n);
+		updata_normal_vector(mlx->data.sp->u, mlx->data.sp->xpm.normal, rot, mlx->ray[i][j].n);
 	}
 	else if (obj == CY)
 	{
 		if (mlx->data.cy->mode != BUMP)
 			return ;
-		updata_normal_vector(mlx->data.cy->u, mlx->data.cy->xpm.img, rot, mlx->ray[i][j].n);
+		updata_normal_vector(mlx->data.cy->u, mlx->data.cy->xpm.normal, rot, mlx->ray[i][j].n);
 	}
 	else if (obj == CR)
 	{
 		if (mlx->data.cr->mode != BUMP)
 			return ;
-		updata_normal_vector(mlx->data.cr->u, mlx->data.cr->xpm.img, rot, mlx->ray[i][j].n);
+		updata_normal_vector(mlx->data.cr->u, mlx->data.cr->xpm.normal, rot, mlx->ray[i][j].n);
 	}
+	
 	else if (obj == PL)
 	{
 		if (mlx->data.pl->mode != BUMP)
 			return ;
-		updata_normal_vector(mlx->data.pl->u, mlx->data.pl->xpm.img, rot, mlx->ray[i][j].n);
+		updata_normal_vector(mlx->data.pl->u, mlx->data.pl->xpm.normal, rot, mlx->ray[i][j].n);
 	}
 }
 
