@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 01:16:49 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 01:44:49 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,38 +111,45 @@ void	remove_newline(char *file_name)
 		file_name[i - 1] = '\0';
 }
 
-int	check_file_number(char **file_name)
+int	count_split(char **file_name)
 {
 	int	cnt;
 
 	cnt = 0;
 	while (file_name[cnt])
 		cnt++;
-	if (cnt == 3)
-	{
-		remove_newline(file_name[2]);
-		return (1);
-	}
-	return (0);
+	return (cnt);
+}
+
+void	free_split(char **file_name, int cnt)
+{
+	int	i;
+
+	i = 0;
+	while (i < cnt)
+		free(file_name[i++]);
+	free(file_name);
 }
 
 t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx)
 {
 	char	**file_name;
+	int		file_count;
 
 	file_name = ft_split(*str, ' ');
 	if (file_name == NULL)
 		print_error("malloc error.");
-	if (file_name[1] == NULL || file_name[2] == NULL)
-		print_error("need both image and normal xpm files.");
-	if (!check_file_number(file_name))
-		print_error("need only two xpm files.");
+	file_count = count_split(file_name);
+	if (file_count != 3)
+		print_error("need both image and normal xpm files only.");
+	remove_newline(file_name[2]);
 	check_format(file_name[1], ".xpm");
 	check_format(file_name[2], ".xpm");
 	open_xpm_file(&(xpm->img), file_name[1], mlx);
 	open_xpm_file(&(xpm->normal), file_name[2], mlx);
 	while (**str != '\n' && **str != '\0')
 		(*str)++;
+	free_split(file_name, file_count);
 	return (BUMP);
 
 }
@@ -2019,7 +2026,7 @@ int	loop_main(t_mlx *mlx)
 	static int	i = 0;
 	if (i == 0)
 	{
-		test(mlx->data);
+		// test(mlx->data);
 		copy_rot_data(mlx);
 		rot = data_cam_num_init(*mlx);
 		exec_rot_data(mlx, rot);
