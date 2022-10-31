@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 13:39:33 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 21:05:15 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,20 @@ void	print_rot_data(t_mdata data)
 	}
 }
 
-
 void	print_error(char *str)
 {
+	write(STDERR_FILENO, "Error\n", ft_strlen("Error\n"));
 	write(STDERR_FILENO, str, ft_strlen(str));
 	write(STDERR_FILENO, "\n", 1);
-	exit(-1);
+	exit(EXIT_FAILURE);
+}
+
+
+double	check_range(double res, double min, double max, char *msg)
+{
+	if (min > res || max < res)
+		print_error(msg);
+	return (res);
 }
 
 void	check_format(char *argv, char *format)
@@ -84,7 +92,7 @@ void	check_format(char *argv, char *format)
 	}
 }
 
-int	opne_data(char *argv)
+int	open_data(char *argv)
 {
 	int	fd;
 
@@ -122,6 +130,25 @@ void	push_x_y_z(double *data, char **str)
 	{
 		count = 0;
 		data[i] = ft_char_double(*str, &count);
+		*str += count;
+		if (**str != ',' && i != 2)
+			print_error("check data");
+		if (i != 2)
+			(*str)++;
+		i++;
+	}
+}
+
+void	push_normal_x_y_z(double *data, char **str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	while (i < 3)
+	{
+		count = 0;
+		data[i] = check_range(ft_char_double(*str, &count), -1, 1, "check normal vector data");
 		*str += count;
 		if (**str != ',' && i != 2)
 			print_error("check data");
@@ -208,7 +235,7 @@ t_texture	push_rgb(unsigned char *rgb, char **str)
 	while (i < 3)
 	{
 		count = 0;
-		rgb[i] = (unsigned char)ft_char_double(*str, &count);
+		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, "check rgb data");
 		*str += count;
 		if (**str != ',' && i != 2)
 			print_error("check , data");
@@ -252,7 +279,7 @@ void	push_a(char *str, t_mlx *mlx)
 	}
 	count = 0;
 	mlx->data.num.count_al += 1;
-	mlx->data.al->ratio = ft_char_double(str, &count);
+	mlx->data.al->ratio = check_range(ft_char_double(str, &count), 0, 1, "check ratio data");
 	str += count;
 	push_rgb(&(mlx->data.al->rgb[0]), &str);
 	null_check(str);
@@ -282,8 +309,8 @@ void	push_c(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_cam += 1;
 	push_x_y_z(&(mlx->data.cam->x[0]), &str);
-	push_x_y_z(&(mlx->data.cam->n[0]), &str);
-	mlx->data.cam->fov = ft_char_double(str, &count);
+	push_normal_x_y_z(&(mlx->data.cam->n[0]), &str);
+	mlx->data.cam->fov = check_range(ft_char_double(str, &count), 0, 180, "check fov data");
 	str += count;
 	null_check(str);
 	mlx->data.cam = save;
@@ -312,7 +339,7 @@ void	push_l(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_l += 1;
 	push_x_y_z(&(mlx->data.l->x[0]), &str);
-	mlx->data.l->ratio = ft_char_double(str, &count);
+	mlx->data.l->ratio = check_range(ft_char_double(str, &count), 0, 1, "check ratio data");
 	str += count;
 	push_rgb(&(mlx->data.l->rgb[0]), &str);
 	null_check(str);
@@ -352,7 +379,7 @@ void	push_sp(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_sp += 1;
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
-	mlx->data.sp->r = ft_char_double(str, &count);
+	mlx->data.sp->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.sp->mode = push_xpm(&(mlx->data.sp->xpm), &str, mlx);
@@ -385,7 +412,7 @@ void	push_pl(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
-	push_x_y_z(&(mlx->data.pl->n[0]), &str);
+	push_normal_x_y_z(&(mlx->data.pl->n[0]), &str);
 	if (check_bump_word(str) == 1)
 		mlx->data.pl->mode = push_xpm(&(mlx->data.pl->xpm), &str, mlx);
 	else
@@ -422,11 +449,11 @@ void	push_cy(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_cy += 1;
 	push_x_y_z(&(mlx->data.cy->c[0]), &str);
-	push_x_y_z(&(mlx->data.cy->n[0]), &str);
-	mlx->data.cy->r = ft_char_double(str, &count);
+	push_normal_x_y_z(&(mlx->data.cy->n[0]), &str);
+	mlx->data.cy->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
 	str += count;
 	count = 0;
-	mlx->data.cy->h = ft_char_double(str, &count);
+	mlx->data.cy->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check height data");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.cy->mode = push_xpm(&(mlx->data.cy->xpm), &str, mlx);
@@ -459,11 +486,11 @@ void	push_cr(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_cr += 1;
 	push_x_y_z(&(mlx->data.cr->c[0]), &str);
-	push_x_y_z(&(mlx->data.cr->n[0]), &str);
-	mlx->data.cr->r = ft_char_double(str, &count);
+	push_normal_x_y_z(&(mlx->data.cr->n[0]), &str);
+	mlx->data.cr->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
 	str += count;
 	count = 0;
-	mlx->data.cr->h = ft_char_double(str, &count);
+	mlx->data.cr->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check height data");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.cr->mode = push_xpm(&(mlx->data.cr->xpm), &str, mlx);
@@ -559,7 +586,7 @@ void	check_cam_error(t_mlx *mlx)
 void	check_input(char *argv, t_mlx *mlx)
 {
 	check_format(argv, ".rt");
-	push_data(opne_data(argv), mlx);
+	push_data(open_data(argv), mlx);
 	close_non_data(mlx);
 	check_cam_error(mlx);
 }
