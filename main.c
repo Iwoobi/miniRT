@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:36:56 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 23:53:38 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,6 +259,8 @@ void	push_a(char *str, t_mlx *mlx)
 	int			count;
 	t_alight	*save;
 
+	if (mlx->data.num.count_al > 0)
+		print_error("too much ambient.");
 	save = mlx->data.al;
 	count = 0;
 	str++;
@@ -288,6 +290,8 @@ void	push_c(char *str, t_mlx *mlx)
 	int		count;
 	t_cam	*save;
 
+	if (mlx->data.num.count_cam > 0)
+		print_error("too much camera.");
 	save = mlx->data.cam;
 	count = 0;
 	str += 1;
@@ -318,6 +322,8 @@ void	push_l(char *str, t_mlx *mlx)
 	int		count;
 	t_light	*save;
 
+	if (mlx->data.num.count_l > 0)
+		print_error("too much light.");
 	save = mlx->data.l;
 	count = 0;
 	str++;
