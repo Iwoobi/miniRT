@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 21:03:11 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 22:42:19 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # define PRESS 2
 # define CLOSED 17
 # define EPSILON 1e-300
+# define WINDOW_WIDTH	1600
+# define WINDOW_HEIGHT	900
+# define KEY_ESC		53
 
 # include <stdio.h>
 # include "get_next_line.h"
@@ -212,6 +215,7 @@ void	ft_mlx_init(t_mlx *my_mlx);
 
 /*pasring*/
 int	check_bump_word(char *str);
+void	print_error(char *str);
 
 /*print*/
 void	test_a(t_data mlx);

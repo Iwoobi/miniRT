@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
+#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/10/28 21:56:45 by youhan           ###   ########.fr        #
+#    Updated: 2022/10/31 22:45:46 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = gcc -g
-NAME = a.out
+NAME = miniRT
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
 SRCS = main.c char_double.c get_next_line.c get_next_line_utils.c mlx_init.c triangle.c utils.c print.c ft_split.c

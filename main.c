@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 21:05:15 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 23:12:48 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void	check_format(char *argv, char *format)
 	while (cnt <= j)
 	{
 		if (argv[i] != format[j - cnt])
-			print_error("check file name");
+			print_error("invalid file format.");
 		i--;
 		cnt++;
 	}
@@ -98,7 +98,7 @@ int	open_data(char *argv)
 
 	fd = open(argv, O_RDONLY);
 	if (fd == -1)
-		print_error("check file name");
+		print_error("invalid file name.");
 	return (fd);
 }
 
@@ -132,7 +132,7 @@ void	push_x_y_z(double *data, char **str)
 		data[i] = ft_char_double(*str, &count);
 		*str += count;
 		if (**str != ',' && i != 2)
-			print_error("check data");
+			print_error("invalid vector data.");
 		if (i != 2)
 			(*str)++;
 		i++;
@@ -148,10 +148,10 @@ void	push_normal_x_y_z(double *data, char **str)
 	while (i < 3)
 	{
 		count = 0;
-		data[i] = check_range(ft_char_double(*str, &count), -1, 1, "check normal vector data");
+		data[i] = check_range(ft_char_double(*str, &count), -1, 1, "invalid range of normal vector data.");
 		*str += count;
 		if (**str != ',' && i != 2)
-			print_error("check data");
+			print_error("invalid normal vector data.");
 		if (i != 2)
 			(*str)++;
 		i++;
@@ -202,9 +202,9 @@ t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx)
 	if (file_name == NULL)
 		print_error("malloc error.");
 	if (file_name[1] == NULL || file_name[2] == NULL)
-		print_error("need both image and normal file.");
+		print_error("need both image and normal xpm files.");
 	if (!check_file_number(file_name))
-		print_error("need only two files.");
+		print_error("need only two xpm files.");
 	check_format(file_name[1], ".xpm");
 	check_format(file_name[2], ".xpm");
 	open_xpm_file(&(xpm->img), file_name[1], mlx);
@@ -235,10 +235,10 @@ t_texture	push_rgb(unsigned char *rgb, char **str)
 	while (i < 3)
 	{
 		count = 0;
-		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, "check rgb data");
+		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, "invalid range of rgb data.");
 		*str += count;
 		if (**str != ',' && i != 2)
-			print_error("check , data");
+			print_error("invalid rgb data.");
 		if (i != 2)
 			(*str)++;
 		i++;
@@ -253,7 +253,7 @@ void	null_check(char *str)
 	if (*str != '\0')
 	{
 		printf("error : %s\n", str);
-		print_error("check input data");
+		print_error("invalid data format.");
 	}
 }
 
@@ -271,7 +271,7 @@ void	push_a(char *str, t_mlx *mlx)
 		{
 			mlx->data.al->next = (t_alight *)malloc(sizeof(t_alight) * 1);
 			if (mlx->data.al->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.al->next->next = NULL;
 		}
 		mlx->data.al = mlx->data.al->next;
@@ -279,7 +279,7 @@ void	push_a(char *str, t_mlx *mlx)
 	}
 	count = 0;
 	mlx->data.num.count_al += 1;
-	mlx->data.al->ratio = check_range(ft_char_double(str, &count), 0, 1, "check ratio data");
+	mlx->data.al->ratio = check_range(ft_char_double(str, &count), 0, 1, "invalid range of ambient ratio data.");
 	str += count;
 	push_rgb(&(mlx->data.al->rgb[0]), &str);
 	null_check(str);
@@ -310,7 +310,7 @@ void	push_c(char *str, t_mlx *mlx)
 	mlx->data.num.count_cam += 1;
 	push_x_y_z(&(mlx->data.cam->x[0]), &str);
 	push_normal_x_y_z(&(mlx->data.cam->n[0]), &str);
-	mlx->data.cam->fov = check_range(ft_char_double(str, &count), 0, 180, "check fov data");
+	mlx->data.cam->fov = check_range(ft_char_double(str, &count), 0, 180, "invalid camera fov data.");
 	str += count;
 	null_check(str);
 	mlx->data.cam = save;
@@ -330,7 +330,7 @@ void	push_l(char *str, t_mlx *mlx)
 		{
 			mlx->data.l->next = (t_light *)malloc(sizeof(t_light) * 1);
 			if (mlx->data.l->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.l->next->next = NULL;
 		}
 		mlx->data.l = mlx->data.l->next;
@@ -339,7 +339,7 @@ void	push_l(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_l += 1;
 	push_x_y_z(&(mlx->data.l->x[0]), &str);
-	mlx->data.l->ratio = check_range(ft_char_double(str, &count), 0, 1, "check ratio data");
+	mlx->data.l->ratio = check_range(ft_char_double(str, &count), 0, 1, "invalid range of light ratio data.");
 	str += count;
 	push_rgb(&(mlx->data.l->rgb[0]), &str);
 	null_check(str);
@@ -370,7 +370,7 @@ void	push_sp(char *str, t_mlx *mlx)
 		{
 			mlx->data.sp->next = (t_sphere *)malloc(sizeof(t_sphere) * 1);
 			if (mlx->data.sp->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.sp->next->next = NULL;
 		}
 		mlx->data.sp = mlx->data.sp->next;
@@ -379,7 +379,7 @@ void	push_sp(char *str, t_mlx *mlx)
 	count = 0;
 	mlx->data.num.count_sp += 1;
 	push_x_y_z(&(mlx->data.sp->c[0]), &str);
-	mlx->data.sp->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
+	mlx->data.sp->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of sphere radius data.");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.sp->mode = push_xpm(&(mlx->data.sp->xpm), &str, mlx);
@@ -403,7 +403,7 @@ void	push_pl(char *str, t_mlx *mlx)
 		{
 			mlx->data.pl->next = (t_plane *)malloc(sizeof(t_plane) * 1);
 			if (mlx->data.pl->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.pl->next->next = NULL;
 		}
 		mlx->data.pl = mlx->data.pl->next;
@@ -440,7 +440,7 @@ void	push_cy(char *str, t_mlx *mlx)
 		{
 			mlx->data.cy->next = (t_cylinder *)malloc(sizeof(t_cylinder) * 1);
 			if (mlx->data.cy->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.cy->next->next = NULL;
 		}
 		mlx->data.cy = mlx->data.cy->next;
@@ -450,10 +450,10 @@ void	push_cy(char *str, t_mlx *mlx)
 	mlx->data.num.count_cy += 1;
 	push_x_y_z(&(mlx->data.cy->c[0]), &str);
 	push_normal_x_y_z(&(mlx->data.cy->n[0]), &str);
-	mlx->data.cy->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
+	mlx->data.cy->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cylinder radius data.");
 	str += count;
 	count = 0;
-	mlx->data.cy->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check height data");
+	mlx->data.cy->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cylinder height data.");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.cy->mode = push_xpm(&(mlx->data.cy->xpm), &str, mlx);
@@ -477,7 +477,7 @@ void	push_cr(char *str, t_mlx *mlx)
 		{
 			mlx->data.cr->next = (t_cron *)malloc(sizeof(t_cron) * 1);
 			if (mlx->data.cr->next == NULL)
-				print_error("malloc error");
+				print_error("malloc error.");
 			mlx->data.cr->next->next = NULL;
 		}
 		mlx->data.cr = mlx->data.cr->next;
@@ -487,10 +487,10 @@ void	push_cr(char *str, t_mlx *mlx)
 	mlx->data.num.count_cr += 1;
 	push_x_y_z(&(mlx->data.cr->c[0]), &str);
 	push_normal_x_y_z(&(mlx->data.cr->n[0]), &str);
-	mlx->data.cr->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check radius data");
+	mlx->data.cr->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone radius data.");
 	str += count;
 	count = 0;
-	mlx->data.cr->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "check height data");
+	mlx->data.cr->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone height data.");
 	str += count;
 	if (check_bump_word(str) == 1)
 		mlx->data.cr->mode = push_xpm(&(mlx->data.cr->xpm), &str, mlx);
@@ -580,7 +580,7 @@ void	close_non_data(t_mlx *mlx)
 void	check_cam_error(t_mlx *mlx)
 {
 	if (mlx->data.num.count_cam == 0)
-		print_error("check cam data");
+		print_error("should be at least one camera.");
 }
 
 void	check_input(char *argv, t_mlx *mlx)
@@ -594,8 +594,8 @@ void	check_input(char *argv, t_mlx *mlx)
 void	init_mlx_data(t_mlx *mlx)
 {
 	int	i;
-	mlx->size[0] = 1600;
-	mlx->size[1] = 900;
+	mlx->size[0] = WINDOW_WIDTH;
+	mlx->size[1] = WINDOW_HEIGHT;
 	mlx->cam_num = 0;
 	mlx->data.num.count_l = 0;
 	mlx->data.num.count_al = 0;
@@ -604,15 +604,15 @@ void	init_mlx_data(t_mlx *mlx)
 	mlx->data.num.count_pl = 0;
 	mlx->data.num.count_cy = 0;
 	mlx->data.num.count_cr = 0;
-	mlx->ray = (t_ray **)malloc(sizeof(t_ray *) * 1600);
+	mlx->ray = (t_ray **)malloc(sizeof(t_ray *) * WINDOW_WIDTH);
 	if (mlx->ray == NULL)
-		print_error("malloc error");
+		print_error("malloc error.");
 	i = 0;
-	while (i < 1600)
+	while (i < WINDOW_WIDTH)
 	{
-		mlx->ray[i] = malloc(sizeof(t_ray) * 900);
+		mlx->ray[i] = malloc(sizeof(t_ray) * WINDOW_HEIGHT);
 		if (mlx->ray[i] == NULL)
-			print_error("malloc error");
+			print_error("malloc error.");
 		i++;
 	}
 	mlx->data.cr = (t_cron *)malloc(sizeof(t_cron) * 1);
@@ -623,11 +623,11 @@ void	init_mlx_data(t_mlx *mlx)
 	mlx->data.cy = (t_cylinder *)malloc(sizeof(t_cylinder) * 1);
 	mlx->data.sp = (t_sphere *)malloc(sizeof(t_sphere) * 1);
 	if (mlx->data.al == NULL || mlx->data.cam == NULL || mlx->data.l == NULL)
-		print_error("malloc error");
+		print_error("malloc error.");
 	if (mlx->data.pl == NULL || mlx->data.cy == NULL || mlx->data.sp == NULL)
-		print_error("malloc error");
+		print_error("malloc error.");
 	if (mlx->data.cr == NULL)
-		print_error("malloc error");
+		print_error("malloc error.");
 	mlx->data.al->next = NULL;
 	mlx->data.cr->next = NULL;
 	mlx->data.l->next = NULL;
@@ -639,7 +639,7 @@ void	init_mlx_data(t_mlx *mlx)
 
 int	press_key(int key_code)
 {
-	if (key_code == 53)
+	if (key_code == KEY_ESC)
 		exit(0);
 	return (1);
 }
@@ -747,7 +747,7 @@ int	rot_data_check(t_cam cam)
 		{
 			if (cam.n[2] != 0)
 				return (-1);
-			print_error("check cam rotate");
+			print_error("invalid camera rotate.");
 		}
 	}
 	return (0);
@@ -1450,9 +1450,7 @@ void	normal_vector_cy(t_mlx *mlx, double	*d, int i, int j)
 void	push_uv_cy_side(t_mlx *mlx, double *d, double *x, double *y)
 {
 	double	vec[3];
-	double	h;
 
-	h = mlx->data.cy->h;
 	vector_n(d, mlx->t, vec);
 	vector_minus(vec, mlx->data.cy->cc, vec);
 	mlx->data.cy->u[0] = (atan2(inner_product(vec, y), inner_product(vec, x)) + M_PI) / (2 * M_PI);
@@ -1791,10 +1789,10 @@ void	canvas_match(t_mlx *mlx)
 	int	j;
 
 	i = 0;
-	while (i < 1600)
+	while (i < WINDOW_WIDTH)
 	{
 		j = 0;
-		while (j < 900)
+		while (j < WINDOW_HEIGHT)
 		{
 			mlx->ray[i][j].deep = -3;
 			mlx->ray[i][j].sum_rgb[0] = 0;
@@ -2207,7 +2205,7 @@ void	phong_point(t_mlx *mlx, int i, int j)
 		mlx->data.l = mlx->data.l->next;
 		k++;
 	}
-	mlx->img.data[1600 * j + i] = apply_color(mlx->ray[i][j].sum_rgb);
+	mlx->img.data[WINDOW_WIDTH * j + i] = apply_color(mlx->ray[i][j].sum_rgb);
 	mlx->data.l = save;
 }
 
@@ -2224,10 +2222,10 @@ void	phong_init(t_mlx *mlx)
 	int	j;
 
 	i = 0;
-	while (i < 1600)
+	while (i < WINDOW_WIDTH)
 	{
 		j = 0;
-		while (j < 900)
+		while (j < WINDOW_HEIGHT)
 		{
 			if (mlx->ray[i][j].deep > 0)
 			{

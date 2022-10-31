@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   char_double.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:26:30 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/21 17:44:26 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 23:15:04 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_back_num(char **str, double *n)
 	count = 0;
 	back_n = 0;
 	(*str)++;
+	if (!(**str >= '0' && **str <= '9'))
+		print_error("no number after dot.");
 	while (**str >= '0' && **str <= '9')
 	{
 		back_n = back_n * 10 + **str - '0';
