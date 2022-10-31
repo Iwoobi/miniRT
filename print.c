@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 22:16:20 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/27 22:33:01 by youhan           ###   ########.fr       */
+/*   Updated: 2022/10/31 23:30:30 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,34 +161,34 @@ void	test_cy(t_data mlx)
 	}
 }
 
-void	test_cr(t_data mlx)
+void	test_cn(t_data mlx)
 {
 	int i;
 	
-	printf("\ntest cr\n");
-	while (mlx.cr != NULL)
+	printf("\ntest cn\n");
+	while (mlx.cn != NULL)
 	{
 		i = 0;
 		while (i < 3)
 		{
-			printf("x[%d] : %f\n",i,mlx.cr->c[i]);
+			printf("x[%d] : %f\n",i,mlx.cn->c[i]);
 			i++;
 		}
 		i = 0;
 		while (i < 3)
 		{
-			printf("n[%d] : %f\n",i,mlx.cr->n[i]);
+			printf("n[%d] : %f\n",i,mlx.cn->n[i]);
 			i++;
 		}
-		printf("r : %f\n", mlx.cr->r);
-		printf("h : %f\n", mlx.cr->h);
+		printf("r : %f\n", mlx.cn->r);
+		printf("h : %f\n", mlx.cn->h);
 		i = 0;
 		while (i < 3)
 		{
-			printf("rgb[%d] : %d\n",i,mlx.cr->rgb[i]);
+			printf("rgb[%d] : %d\n",i,mlx.cn->rgb[i]);
 			i++;
 		}
-		mlx.cr = mlx.cr->next;
+		mlx.cn = mlx.cn->next;
 	}
 }
 
@@ -300,34 +300,34 @@ void	ctest_cy(t_data mlx)
 	}
 }
 
-void	ctest_cr(t_data mlx)
+void	ctest_cn(t_data mlx)
 {
 	int i;
 	
-	printf("\ntest cr\n");
-	while (mlx.cr != NULL)
+	printf("\ntest cn\n");
+	while (mlx.cn != NULL)
 	{
 		i = 0;
 		while (i < 3)
 		{
-			printf("x[%d] : %f\n",i,mlx.cr->cc[i]);
+			printf("x[%d] : %f\n",i,mlx.cn->cc[i]);
 			i++;
 		}
 		i = 0;
 		while (i < 3)
 		{
-			printf("n[%d] : %f\n",i,mlx.cr->nc[i]);
+			printf("n[%d] : %f\n",i,mlx.cn->nc[i]);
 			i++;
 		}
-		printf("r : %f\n", mlx.cr->r);
-		printf("h : %f\n", mlx.cr->h);
+		printf("r : %f\n", mlx.cn->r);
+		printf("h : %f\n", mlx.cn->h);
 		i = 0;
 		while (i < 3)
 		{
-			printf("rgb[%d] : %d\n",i,mlx.cr->rgb[i]);
+			printf("rgb[%d] : %d\n",i,mlx.cn->rgb[i]);
 			i++;
 		}
-		mlx.cr = mlx.cr->next;
+		mlx.cn = mlx.cn->next;
 	}
 }
 

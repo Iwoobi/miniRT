@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 22:42:19 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 23:31:38 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef enum e_obj
 	PL,
 	CY,
 	SP,
-	CR
+	CN
 }	t_obj;
 
 typedef enum e_texture
@@ -107,7 +107,7 @@ typedef struct s_cylinder
 	struct s_cylinder	*next;
 }	t_cylinder;
 
-typedef struct s_cron
+typedef struct s_cone
 {
 	double			c[3];
 	double			cc[3];
@@ -120,8 +120,8 @@ typedef struct s_cron
 	t_texture		mode;
 	unsigned char	rgb[3];
 	t_xpm			xpm;
-	struct s_cron	*next;
-}	t_cron;
+	struct s_cone	*next;
+}	t_cone;
 
 typedef	struct s_alight
 {
@@ -157,7 +157,7 @@ typedef struct s_count
 	int	count_sp;
 	int	count_pl;
 	int	count_cy;
-	int	count_cr;
+	int	count_cn;
 }	t_count;
 
 
@@ -169,7 +169,7 @@ typedef struct s_data
 	t_sphere	*sp;
 	t_plane		*pl;
 	t_cylinder	*cy;
-	t_cron		*cr;
+	t_cone		*cn;
 	t_count		num;
 }	t_data;
 
@@ -224,12 +224,12 @@ void	test_l(t_data mlx);
 void	test_cy(t_data mlx);
 void	test_sp(t_data mlx);
 void	test_pl(t_data mlx);
-void	test_cr(t_data mlx);
+void	test_cn(t_data mlx);
 
 
 void	ctest_l(t_data mlx);
 void	ctest_cy(t_data mlx);
 void	ctest_sp(t_data mlx);
 void	ctest_pl(t_data mlx);
-void	ctest_cr(t_data mlx);
+void	ctest_cn(t_data mlx);
 #endif

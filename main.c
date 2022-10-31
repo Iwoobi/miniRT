@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:12:48 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 23:36:56 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,10 +251,7 @@ void	null_check(char *str)
 	while ((*str >= 9 && *str <= 13) || *str == 32)
 		str++;
 	if (*str != '\0')
-	{
-		printf("error : %s\n", str);
 		print_error("invalid data format.");
-	}
 }
 
 void	push_a(char *str, t_mlx *mlx)
@@ -463,41 +460,41 @@ void	push_cy(char *str, t_mlx *mlx)
 	mlx->data.cy = save;
 }
 
-void	push_cr(char *str, t_mlx *mlx)
+void	push_cn(char *str, t_mlx *mlx)
 {
 	int		count;
-	t_cron	*save;
+	t_cone	*save;
 
-	save = mlx->data.cr;
+	save = mlx->data.cn;
 	count = 0;
 	str += 2;
-	while (mlx->data.num.count_cr > count)
+	while (mlx->data.num.count_cn > count)
 	{
-		if (mlx->data.num.count_cr - count == 1)
+		if (mlx->data.num.count_cn - count == 1)
 		{
-			mlx->data.cr->next = (t_cron *)malloc(sizeof(t_cron) * 1);
-			if (mlx->data.cr->next == NULL)
+			mlx->data.cn->next = (t_cone *)malloc(sizeof(t_cone) * 1);
+			if (mlx->data.cn->next == NULL)
 				print_error("malloc error.");
-			mlx->data.cr->next->next = NULL;
+			mlx->data.cn->next->next = NULL;
 		}
-		mlx->data.cr = mlx->data.cr->next;
+		mlx->data.cn = mlx->data.cn->next;
 		count++;
 	}
 	count = 0;
-	mlx->data.num.count_cr += 1;
-	push_x_y_z(&(mlx->data.cr->c[0]), &str);
-	push_normal_x_y_z(&(mlx->data.cr->n[0]), &str);
-	mlx->data.cr->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone radius data.");
+	mlx->data.num.count_cn += 1;
+	push_x_y_z(&(mlx->data.cn->c[0]), &str);
+	push_normal_x_y_z(&(mlx->data.cn->n[0]), &str);
+	mlx->data.cn->r = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone radius data.");
 	str += count;
 	count = 0;
-	mlx->data.cr->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone height data.");
+	mlx->data.cn->h = check_range(ft_char_double(str, &count), 0, DBL_MAX, "invalid range of cone height data.");
 	str += count;
 	if (check_bump_word(str) == 1)
-		mlx->data.cr->mode = push_xpm(&(mlx->data.cr->xpm), &str, mlx);
+		mlx->data.cn->mode = push_xpm(&(mlx->data.cn->xpm), &str, mlx);
 	else
-		mlx->data.cr->mode = push_rgb(&(mlx->data.cr->rgb[0]), &str);
+		mlx->data.cn->mode = push_rgb(&(mlx->data.cn->rgb[0]), &str);
 	null_check(str);
-	mlx->data.cr = save;
+	mlx->data.cn = save;
 }
 
 void	check_obj(char *str, t_mlx *mlx)
@@ -514,14 +511,10 @@ void	check_obj(char *str, t_mlx *mlx)
 		push_pl(str, mlx);
 	else if (div_str(str, "cy") == 1)
 		push_cy(str, mlx);
-	else if (div_str(str, "cr") == 1)
-		push_cr(str, mlx);
+	else if (div_str(str, "co") == 1)
+		push_cn(str, mlx);
 	else if (*str != '\0')
-	{
-		printf("here\n");
-		printf("\n%s\n", str);
-		print_error("check data");
-	}
+		print_error("invalid object name.");
 }
 
 void	check_push_data(char *str, t_mlx *mlx)
@@ -570,10 +563,10 @@ void	close_non_data(t_mlx *mlx)
 		free(mlx->data.sp);
 		mlx->data.sp = NULL;
 	}
-	if (mlx->data.num.count_cr == 0)
+	if (mlx->data.num.count_cn == 0)
 	{
-		free(mlx->data.cr);
-		mlx->data.cr = NULL;
+		free(mlx->data.cn);
+		mlx->data.cn = NULL;
 	}
 }
 
@@ -603,7 +596,7 @@ void	init_mlx_data(t_mlx *mlx)
 	mlx->data.num.count_sp = 0;
 	mlx->data.num.count_pl = 0;
 	mlx->data.num.count_cy = 0;
-	mlx->data.num.count_cr = 0;
+	mlx->data.num.count_cn = 0;
 	mlx->ray = (t_ray **)malloc(sizeof(t_ray *) * WINDOW_WIDTH);
 	if (mlx->ray == NULL)
 		print_error("malloc error.");
@@ -615,7 +608,7 @@ void	init_mlx_data(t_mlx *mlx)
 			print_error("malloc error.");
 		i++;
 	}
-	mlx->data.cr = (t_cron *)malloc(sizeof(t_cron) * 1);
+	mlx->data.cn = (t_cone *)malloc(sizeof(t_cone) * 1);
 	mlx->data.al = (t_alight *)malloc(sizeof(t_alight) * 1);
 	mlx->data.cam = (t_cam *)malloc(sizeof(t_cam) * 1);
 	mlx->data.l = (t_light *)malloc(sizeof(t_light) * 1);
@@ -626,10 +619,10 @@ void	init_mlx_data(t_mlx *mlx)
 		print_error("malloc error.");
 	if (mlx->data.pl == NULL || mlx->data.cy == NULL || mlx->data.sp == NULL)
 		print_error("malloc error.");
-	if (mlx->data.cr == NULL)
+	if (mlx->data.cn == NULL)
 		print_error("malloc error.");
 	mlx->data.al->next = NULL;
-	mlx->data.cr->next = NULL;
+	mlx->data.cn->next = NULL;
 	mlx->data.l->next = NULL;
 	mlx->data.cam->next = NULL;
 	mlx->data.pl->next = NULL;
@@ -871,21 +864,21 @@ void	updata_rot_cy(t_data *data, t_mdata mdata)
 	data->cy = save;
 }
 
-void	updata_rot_cr(t_data *data, t_mdata mdata)
+void	updata_rot_cn(t_data *data, t_mdata mdata)
 {
-	t_cron	*save;
+	t_cone	*save;
 
-	save = data->cr;
-	while (data->cr != NULL)
+	save = data->cn;
+	while (data->cn != NULL)
 	{
-		data->cr->cc[0] -= mdata.m[0];
-		data->cr->cc[1] -= mdata.m[1];
-		data->cr->cc[2] -= mdata.m[2];
-		trans_rot_data(data->cr->cc, mdata);
-		trans_rot_data(data->cr->nc, mdata);
-		data->cr = data->cr->next;
+		data->cn->cc[0] -= mdata.m[0];
+		data->cn->cc[1] -= mdata.m[1];
+		data->cn->cc[2] -= mdata.m[2];
+		trans_rot_data(data->cn->cc, mdata);
+		trans_rot_data(data->cn->nc, mdata);
+		data->cn = data->cn->next;
 	}
-	data->cr = save;
+	data->cn = save;
 }
 
 
@@ -895,7 +888,7 @@ void	updata_rot(t_mlx *mlx, t_mdata mdata)
 	updata_rot_sp(&(mlx->data), mdata);
 	updata_rot_pl(&(mlx->data), mdata);
 	updata_rot_cy(&(mlx->data), mdata);
-	updata_rot_cr(&(mlx->data), mdata);
+	updata_rot_cn(&(mlx->data), mdata);
 }
 
 void	test(t_data mlx)
@@ -904,7 +897,7 @@ void	test(t_data mlx)
 	test_c(mlx);
 	test_l(mlx);
 	test_cy(mlx);
-	test_cr(mlx);
+	test_cn(mlx);
 	test_pl(mlx);
 	test_sp(mlx);
 }
@@ -975,22 +968,22 @@ void	copy_rot_cy(t_mlx *mlx)
 	mlx->data.cy = save;
 }
 
-void	copy_rot_cr(t_mlx *mlx)
+void	copy_rot_cn(t_mlx *mlx)
 {
-	t_cron	*save;
+	t_cone	*save;
 
-	save = mlx->data.cr;
-	while (mlx->data.cr != NULL)
+	save = mlx->data.cn;
+	while (mlx->data.cn != NULL)
 	{
-		mlx->data.cr->cc[0] = mlx->data.cr->c[0];
-		mlx->data.cr->cc[1] = mlx->data.cr->c[1];
-		mlx->data.cr->cc[2] = mlx->data.cr->c[2];
-		mlx->data.cr->nc[0] = mlx->data.cr->n[0];
-		mlx->data.cr->nc[1] = mlx->data.cr->n[1];
-		mlx->data.cr->nc[2] = mlx->data.cr->n[2];
-		mlx->data.cr = mlx->data.cr->next;
+		mlx->data.cn->cc[0] = mlx->data.cn->c[0];
+		mlx->data.cn->cc[1] = mlx->data.cn->c[1];
+		mlx->data.cn->cc[2] = mlx->data.cn->c[2];
+		mlx->data.cn->nc[0] = mlx->data.cn->n[0];
+		mlx->data.cn->nc[1] = mlx->data.cn->n[1];
+		mlx->data.cn->nc[2] = mlx->data.cn->n[2];
+		mlx->data.cn = mlx->data.cn->next;
 	}
-	mlx->data.cr = save;
+	mlx->data.cn = save;
 }
 
 void	copy_rot_data(t_mlx *mlx)
@@ -999,13 +992,13 @@ void	copy_rot_data(t_mlx *mlx)
 	copy_rot_sp(mlx);
 	copy_rot_pl(mlx);
 	copy_rot_cy(mlx);
-	copy_rot_cr(mlx);
+	copy_rot_cn(mlx);
 }
 
 void	ctest(t_data mlx)
 {
 	ctest_cy(mlx);
-	ctest_cr(mlx);
+	ctest_cn(mlx);
 	ctest_l(mlx);
 	ctest_pl(mlx);
 	ctest_sp(mlx);
@@ -1152,11 +1145,11 @@ void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj)
 			return ;
 		updata_normal_vector(mlx->data.cy->u, mlx->data.cy->xpm.normal, rot, mlx->ray[i][j].n);
 	}
-	else if (obj == CR)
+	else if (obj == CN)
 	{
-		if (mlx->data.cr->mode != BUMP)
+		if (mlx->data.cn->mode != BUMP)
 			return ;
-		updata_normal_vector(mlx->data.cr->u, mlx->data.cr->xpm.normal, rot, mlx->ray[i][j].n);
+		updata_normal_vector(mlx->data.cn->u, mlx->data.cn->xpm.normal, rot, mlx->ray[i][j].n);
 	}
 	
 	else if (obj == PL)
@@ -1379,14 +1372,14 @@ void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj)
 		else if (mlx->data.sp->mode == BUMP)
 			xpm_color_select(mlx->data.sp->u, rgb, mlx->data.sp->xpm.img);
 	}
-	else if (obj == CR)
+	else if (obj == CN)
 	{
-		if (mlx->data.cr->mode == NONE)
-			color_val(rgb, mlx->data.cr->rgb);
-		else if (mlx->data.cr->mode == CHECKER)
-			checker_board(mlx->data.cr->checker_u, rgb);
-		else if (mlx->data.cr->mode == BUMP)
-			xpm_color_select(mlx->data.cr->u, rgb, mlx->data.cr->xpm.img);
+		if (mlx->data.cn->mode == NONE)
+			color_val(rgb, mlx->data.cn->rgb);
+		else if (mlx->data.cn->mode == CHECKER)
+			checker_board(mlx->data.cn->checker_u, rgb);
+		else if (mlx->data.cn->mode == BUMP)
+			xpm_color_select(mlx->data.cn->u, rgb, mlx->data.cn->xpm.img);
 	}
 }
 
@@ -1552,13 +1545,13 @@ void	check_hit_cy(t_mlx *mlx, double *d, int i, int j)
 	mlx->data.cy = save;
 }
 
-void	find_cron_head(double *n, double h, double *c, double *result)
+void	find_cone_head(double *n, double h, double *c, double *result)
 {
 	vector_n(n, h, result);
 	vector_plus(result, c, result);
 }
 
-void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
+void	check_hit_side_cn_d(double *d, double *n, double *c, t_mlx *mlx)
 {
 	double	head[3];
 	double	dot[3];
@@ -1567,8 +1560,8 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	int		i;
 
 	mlx->t = -2;
-	find_cron_head(n, mlx->data.cr->h, c, head);
-	val = pow_2(mlx->data.cr->h) / (pow_2(mlx->data.cr->h) + pow_2(mlx->data.cr->r));
+	find_cone_head(n, mlx->data.cn->h, c, head);
+	val = pow_2(mlx->data.cn->h) / (pow_2(mlx->data.cn->h) + pow_2(mlx->data.cn->r));
 	a[0] = pow_2(inner_product(d, n)) - val * pow_2(vector_size(d));
 	a[1] = 2 * (val * inner_product(head, d) - (inner_product(d, n) * inner_product(head, n)));
 	a[2] = pow_2(inner_product(head, n)) - val * pow_2(vector_size(head));
@@ -1581,7 +1574,7 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 		{
 			vector_n(d, find_f(a[0], a[1], a[2], 2 * i - 3), dot);
 			vector_minus(dot, c, dot);
-			if (inner_product(dot, n) < mlx->data.cr->h)
+			if (inner_product(dot, n) < mlx->data.cn->h)
 			{
 				if (inner_product(dot, n) > 0)
 				{
@@ -1595,7 +1588,7 @@ void	check_hit_side_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	}
 }
 
-void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
+void	check_hit_bot_cn_d(double *d, double *n, double *c, t_mlx *mlx)
 {
 	double	t;
 	double	vec[3];
@@ -1607,7 +1600,7 @@ void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	if (t < EPSILON)
 		return ;
 	vector_minus(vec, c, vec);
-	if (vector_size(vec) <= mlx->data.cr->r)
+	if (vector_size(vec) <= mlx->data.cn->r)
 	{
 		if (mlx->t > t || mlx->t < 0)
 		{
@@ -1617,53 +1610,53 @@ void	check_hit_bot_cr_d(double *d, double *n, double *c, t_mlx *mlx)
 	}
 }
 
-void	push_uv_cr_side(t_mlx *mlx, double *d, double *x, double *y)
+void	push_uv_cn_side(t_mlx *mlx, double *d, double *x, double *y)
 {
 	double	vec[3];
 	double	h;
 
-	h = mlx->data.cr->h;
+	h = mlx->data.cn->h;
 	vector_n(d, mlx->t, vec);
-	vector_minus(vec, mlx->data.cr->cc, vec);
-	mlx->data.cr->u[0] = (atan2(inner_product(vec, y), inner_product(vec, x)) + M_PI) / (2 * M_PI);
-	mlx->data.cr->u[1] = fmod(inner_product(vec, mlx->data.cr->nc) / h, 1);
-	mlx->data.cr->checker_u[0] = mlx->data.cr->r * 4 * (atan2(inner_product(vec, x), inner_product(vec, y)) + M_PI) / (2 * M_PI);
-	mlx->data.cr->checker_u[1] = round(fmod(inner_product(vec, mlx->data.cr->nc) * 3 / h, 1));
+	vector_minus(vec, mlx->data.cn->cc, vec);
+	mlx->data.cn->u[0] = (atan2(inner_product(vec, y), inner_product(vec, x)) + M_PI) / (2 * M_PI);
+	mlx->data.cn->u[1] = fmod(inner_product(vec, mlx->data.cn->nc) / h, 1);
+	mlx->data.cn->checker_u[0] = mlx->data.cn->r * 4 * (atan2(inner_product(vec, x), inner_product(vec, y)) + M_PI) / (2 * M_PI);
+	mlx->data.cn->checker_u[1] = round(fmod(inner_product(vec, mlx->data.cn->nc) * 3 / h, 1));
 }
 
-void	push_uv_cr_bot(t_mlx *mlx, double *d, double *x, double *y)
+void	push_uv_cn_bot(t_mlx *mlx, double *d, double *x, double *y)
 {
 	double	vec[3];
 
 	vector_n(d, mlx->t, vec);
-	vector_minus(vec, mlx->data.cr->cc, vec);	
-	mlx->data.cr->u[0] = (fmod(inner_product(x, vec), 1) / 2 + 1) / 2;
-	mlx->data.cr->u[1] = (fmod(inner_product(y, vec), 1) / 2 + 1) / 2;
-	mlx->data.cr->checker_u[0] = round(fmod(inner_product(x, vec) * 2 / mlx->data.cr->r, 1));
+	vector_minus(vec, mlx->data.cn->cc, vec);	
+	mlx->data.cn->u[0] = (fmod(inner_product(x, vec), 1) / 2 + 1) / 2;
+	mlx->data.cn->u[1] = (fmod(inner_product(y, vec), 1) / 2 + 1) / 2;
+	mlx->data.cn->checker_u[0] = round(fmod(inner_product(x, vec) * 2 / mlx->data.cn->r, 1));
 	if (inner_product(x, vec) < 0)
-		mlx->data.cr->checker_u[0] -= 1;
-	mlx->data.cr->checker_u[1] = round(fmod(inner_product(y, vec) * 2 / mlx->data.cr->r, 1));
+		mlx->data.cn->checker_u[0] -= 1;
+	mlx->data.cn->checker_u[1] = round(fmod(inner_product(y, vec) * 2 / mlx->data.cn->r, 1));
 	if (inner_product(y, vec) < 0)
-		mlx->data.cr->checker_u[1] -= 1;
+		mlx->data.cn->checker_u[1] -= 1;
 }
 
-void	push_uv_cr(t_mlx *mlx, double *d, double *x, double *y)
+void	push_uv_cn(t_mlx *mlx, double *d, double *x, double *y)
 {
 	if (mlx->flag == 1)
-		push_uv_cr_side(mlx, d, x, y);
+		push_uv_cn_side(mlx, d, x, y);
 	else if (mlx->flag == 2)
-		push_uv_cr_bot(mlx, d, x, y);
+		push_uv_cn_bot(mlx, d, x, y);
 }
 
-void	uv_axis_cr(t_mlx *mlx, double *d)
+void	uv_axis_cn(t_mlx *mlx, double *d)
 {
 	double	vec_y[3];
 	double	vec_x[3];
 	double	z[3];
 
 	axis_z(z);
-	cross_product(mlx->data.cr->nc, z, vec_y);
-	cross_product(vec_y, mlx->data.cr->nc, vec_x);
+	cross_product(mlx->data.cn->nc, z, vec_y);
+	cross_product(vec_y, mlx->data.cn->nc, vec_x);
 	if (vector_size(vec_y) == 0)
 	{
 		axis_y(vec_y);
@@ -1674,62 +1667,62 @@ void	uv_axis_cr(t_mlx *mlx, double *d)
 		normalize_vector(vec_y);
 		normalize_vector(vec_x);
 	}
-	push_uv_cr(mlx, d, vec_x, vec_y);
+	push_uv_cn(mlx, d, vec_x, vec_y);
 }
 
-int	check_hit_cr_d(double *d, double *n, double *c, t_mlx *mlx)
+int	check_hit_cn_d(double *d, double *n, double *c, t_mlx *mlx)
 {
 	mlx->flag = 0;
-	check_hit_side_cr_d(d, n, c, mlx);
-	check_hit_bot_cr_d(d, n, c, mlx);
+	check_hit_side_cn_d(d, n, c, mlx);
+	check_hit_bot_cn_d(d, n, c, mlx);
 	if (mlx->flag != 0)
-		uv_axis_cr(mlx, d);
+		uv_axis_cn(mlx, d);
 	return (mlx->flag);
 }
 
-void	normal_vector_side_cr(t_mlx *mlx, int i, int j)
+void	normal_vector_side_cn(t_mlx *mlx, int i, int j)
 {
 	double	head[3];
 	double	cross_dot_n[3];
 	double	cross_x[3];
 
-	find_cron_head(mlx->data.cr->nc, mlx->data.cr->h, mlx->data.cr->cc, head);
+	find_cone_head(mlx->data.cn->nc, mlx->data.cn->h, mlx->data.cn->cc, head);
 	vector_n(mlx->ray[i][j].d, mlx->t, cross_dot_n);
 	vector_minus(cross_dot_n, head, cross_dot_n);
-	cross_product(cross_dot_n, mlx->data.cr->nc, cross_x);
+	cross_product(cross_dot_n, mlx->data.cn->nc, cross_x);
 	cross_product(cross_x, cross_dot_n, mlx->ray[i][j].n);
 	normalize_vector(mlx->ray[i][j].n);
 }
 
-void	normal_vector_cr(t_mlx *mlx, int i, int j)
+void	normal_vector_cn(t_mlx *mlx, int i, int j)
 {
 	if (mlx->flag == 2)
-		vector_n(mlx->data.cr->nc, -1, mlx->ray[i][j].n);
+		vector_n(mlx->data.cn->nc, -1, mlx->ray[i][j].n);
 	else if (mlx->flag == 1)
-		normal_vector_side_cr(mlx, i, j);
+		normal_vector_side_cn(mlx, i, j);
 }
 
-void	check_hit_cr(t_mlx *mlx, double *d, int i, int j)
+void	check_hit_cn(t_mlx *mlx, double *d, int i, int j)
 {
-	t_cron	*save;
+	t_cone	*save;
 
-	save = mlx->data.cr;
-	while (mlx->data.cr != NULL)
+	save = mlx->data.cn;
+	while (mlx->data.cn != NULL)
 	{
-		normalize_vector(mlx->data.cr->nc);
-		if (check_hit_cr_d(d, mlx->data.cr->nc, mlx->data.cr->cc, mlx) != 0)
+		normalize_vector(mlx->data.cn->nc);
+		if (check_hit_cn_d(d, mlx->data.cn->nc, mlx->data.cn->cc, mlx) != 0)
 		{
 			if (mlx->ray[i][j].deep > mlx->t || mlx->ray[i][j].deep < 0)
 			{
 				mlx->ray[i][j].deep = mlx->t;
-				color_select(mlx, mlx->ray[i][j].rgb, CR);
-				normal_vector_cr(mlx, i, j);
-				normal_vector_bump(mlx, i, j, CR);
+				color_select(mlx, mlx->ray[i][j].rgb, CN);
+				normal_vector_cn(mlx, i, j);
+				normal_vector_bump(mlx, i, j, CN);
 			}
 		}
-		mlx->data.cr = mlx->data.cr->next;
+		mlx->data.cn = mlx->data.cn->next;
 	}
-	mlx->data.cr = save;
+	mlx->data.cn = save;
 }
 
 void	normal_vector_pl(t_mlx *mlx, int i, int j)
@@ -1780,7 +1773,7 @@ void	hit_point(t_mlx *mlx, int i, int j)
 	check_hit_sp(mlx, d, i, j);
 	check_hit_cy(mlx, d, i, j);
 	check_hit_pl(mlx, d, i, j);
-	check_hit_cr(mlx, d, i, j); 
+	check_hit_cn(mlx, d, i, j); 
 }
 
 void	canvas_match(t_mlx *mlx)
@@ -2055,26 +2048,26 @@ int	check_hit_gray_pl(t_mlx *mlx, int i, int j)
 	return (0);
 }
 
-int	check_hit_gray_cr_bot_d(double *d, double *dot, t_mlx *mlx)
+int	check_hit_gray_cn_bot_d(double *d, double *dot, t_mlx *mlx)
 {
 	double	vec[3];
 	double	t;
 
-	vector_minus(mlx->data.cr->cc, dot, vec);
-	if (inner_product(d, mlx->data.cr->nc) < 0.000001)
+	vector_minus(mlx->data.cn->cc, dot, vec);
+	if (inner_product(d, mlx->data.cn->nc) < 0.000001)
 		return (0);
-	t = inner_product(vec, mlx->data.cr->nc) / inner_product(d, mlx->data.cr->nc);
+	t = inner_product(vec, mlx->data.cn->nc) / inner_product(d, mlx->data.cn->nc);
 	if (t < 0.0001)
 		return (0);
 	vector_n(d, t, vec);
 	vector_plus(vec, dot, vec);
-	vector_minus(vec, mlx->data.cr->cc, vec);
-	if (vector_size(vec) > mlx->data.cr->r)
+	vector_minus(vec, mlx->data.cn->cc, vec);
+	if (vector_size(vec) > mlx->data.cn->r)
 		return (0);
 	return (1);	
 }
 
-int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
+int	check_hit_gray_cn_side_d(double *d, double *dot, t_mlx *mlx)
 {
 	double	head[3];
 	double	vec[3];
@@ -2082,12 +2075,12 @@ int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
 	double	val;
 	int		k;
 
-	find_cron_head(mlx->data.cr->nc, mlx->data.cr->h, mlx->data.cr->cc, head);
+	find_cone_head(mlx->data.cn->nc, mlx->data.cn->h, mlx->data.cn->cc, head);
 	vector_minus(head, dot, head);
-	val = (pow_2(mlx->data.cr->h) / (pow_2(mlx->data.cr->h) + pow_2(mlx->data.cr->r)));
-	a[0] = pow_2(inner_product(d, mlx->data.cr->nc)) - val * pow_2(vector_size(d));
-	a[1] = 2 * (val * inner_product(head, d) - (inner_product(d, mlx->data.cr->nc) * inner_product(head, mlx->data.cr->nc)));
-	a[2] = pow_2(inner_product(head, mlx->data.cr->nc)) - val * pow_2(vector_size(head));
+	val = (pow_2(mlx->data.cn->h) / (pow_2(mlx->data.cn->h) + pow_2(mlx->data.cn->r)));
+	a[0] = pow_2(inner_product(d, mlx->data.cn->nc)) - val * pow_2(vector_size(d));
+	a[1] = 2 * (val * inner_product(head, d) - (inner_product(d, mlx->data.cn->nc) * inner_product(head, mlx->data.cn->nc)));
+	a[2] = pow_2(inner_product(head, mlx->data.cn->nc)) - val * pow_2(vector_size(head));
 	if (equation_d(a[0], a[1], a[2]) < 0)
 		return (0);
 	k = 2;
@@ -2097,10 +2090,10 @@ int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
 		{
 			vector_n(d, find_f(a[0], a[1], a[2], 2 * k - 3), vec);
 			vector_plus(vec, dot, vec);
-			vector_minus(vec, mlx->data.cr->cc, vec);
-			if (inner_product(vec, mlx->data.cr->nc) < mlx->data.cr->h)
+			vector_minus(vec, mlx->data.cn->cc, vec);
+			if (inner_product(vec, mlx->data.cn->nc) < mlx->data.cn->h)
 			{
-				if (inner_product(vec, mlx->data.cr->nc) > 0)
+				if (inner_product(vec, mlx->data.cn->nc) > 0)
 					return (1);
 			}
 		}
@@ -2109,33 +2102,33 @@ int	check_hit_gray_cr_side_d(double *d, double *dot, t_mlx *mlx)
 	return (0);
 }
 
-int	check_hit_gray_cr_d(double *d, double *dot, t_mlx *mlx)
+int	check_hit_gray_cn_d(double *d, double *dot, t_mlx *mlx)
 {
-	if (check_hit_gray_cr_bot_d(d, dot, mlx) == 1)
+	if (check_hit_gray_cn_bot_d(d, dot, mlx) == 1)
 		return (1);
-	if (check_hit_gray_cr_side_d(d, dot, mlx) == 1)
+	if (check_hit_gray_cn_side_d(d, dot, mlx) == 1)
 		return (1);
 	return (0);
 }
 
-int	check_hit_gray_cr(t_mlx *mlx, int i, int j)
+int	check_hit_gray_cn(t_mlx *mlx, int i, int j)
 {
-	t_cron	*save;
+	t_cone	*save;
 	double	light[3];
 
 	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
 	normalize_vector(light);
-	save = mlx->data.cr;
-	while (mlx->data.cr != NULL)
+	save = mlx->data.cn;
+	while (mlx->data.cn != NULL)
 	{
-		if (check_hit_gray_cr_d(light, mlx->ray[i][j].dot, mlx) == 1)
+		if (check_hit_gray_cn_d(light, mlx->ray[i][j].dot, mlx) == 1)
 		{
-			mlx->data.cr = save;
+			mlx->data.cn = save;
 			return (1);
 		}
-		mlx->data.cr = mlx->data.cr->next;
+		mlx->data.cn = mlx->data.cn->next;
 	}
-	mlx->data.cr = save;
+	mlx->data.cn = save;
 	return (0);
 }
 
@@ -2148,7 +2141,7 @@ void	gray_exist(t_mlx *mlx, int i, int j, unsigned int phong[3][3])
 		reset_phong_light(phong);
 	else if (check_hit_gray_cy(mlx, i, j) == 1)
 		reset_phong_light(phong);
-	else if (check_hit_gray_cr(mlx, i, j) == 1)
+	else if (check_hit_gray_cn(mlx, i, j) == 1)
 		reset_phong_light(phong);
 }
 
