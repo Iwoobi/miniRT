@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:53:38 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 00:46:27 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,6 @@ void	print_rot_data(t_mdata data)
 	}
 }
 
-void	print_error(char *str)
-{
-	write(STDERR_FILENO, "Error\n", ft_strlen("Error\n"));
-	write(STDERR_FILENO, str, ft_strlen(str));
-	write(STDERR_FILENO, "\n", 1);
-	exit(EXIT_FAILURE);
-}
 
 
 double	check_range(double res, double min, double max, char *msg)
@@ -66,58 +59,6 @@ double	check_range(double res, double min, double max, char *msg)
 	if (min > res || max < res)
 		print_error(msg);
 	return (res);
-}
-
-void	check_format(char *argv, char *format)
-{
-	int	i;
-	int	j;
-	int	cnt;
-
-	i = 0;
-	j = 0;
-	cnt = 0;
-	while (argv[i])
-		i++;
-	while (format[j])
-		j++;
-	i--;
-	j--;
-	while (cnt <= j)
-	{
-		if (argv[i] != format[j - cnt])
-			print_error("invalid file format.");
-		i--;
-		cnt++;
-	}
-}
-
-int	open_data(char *argv)
-{
-	int	fd;
-
-	fd = open(argv, O_RDONLY);
-	if (fd == -1)
-		print_error("invalid file name.");
-	return (fd);
-}
-
-int	div_str(char *str, char *div)
-{
-	if (*str == '\0')
-		return (-1);
-	if (str == NULL || div == NULL)
-		return (-1);
-	while (*div != '\0')
-	{
-		if (*div != *str)
-			return (-1);
-		div++;
-		str++;
-	}
-	if (*str == ' ' || *str == '\n' || *str == '\0')
-		return (1);
-	return (-1);
 }
 
 void	push_x_y_z(double *data, char **str)
@@ -501,93 +442,6 @@ void	push_cn(char *str, t_mlx *mlx)
 		mlx->data.cn->mode = push_rgb(&(mlx->data.cn->rgb[0]), &str);
 	null_check(str);
 	mlx->data.cn = save;
-}
-
-void	check_obj(char *str, t_mlx *mlx)
-{
-	if (div_str(str, "A") == 1)
-		push_a(str, mlx);
-	else if (div_str(str, "C") == 1)
-		push_c(str, mlx);
-	else if (div_str(str, "L") == 1)
-		push_l(str, mlx);
-	else if (div_str(str, "sp") == 1)
-		push_sp(str, mlx);
-	else if (div_str(str, "pl") == 1)
-		push_pl(str, mlx);
-	else if (div_str(str, "cy") == 1)
-		push_cy(str, mlx);
-	else if (div_str(str, "co") == 1)
-		push_cn(str, mlx);
-	else if (*str != '\0')
-		print_error("invalid object name.");
-}
-
-void	check_push_data(char *str, t_mlx *mlx)
-{
-	check_obj(str, mlx);
-}
-
-void	push_data(int fd, t_mlx *mlx)
-{
-	char	*str;
-
-	str = get_next_line(fd);
-	while (str != NULL)
-	{
-		if (!(*str == '\n' && ft_strlen(str) == 1))
-			check_push_data(str, mlx);
-		free(str);
-		str = get_next_line(fd);
-	}
-}
-
-void	close_non_data(t_mlx *mlx)
-{
-	if (mlx->data.num.count_al == 0)
-	{
-		free(mlx->data.al);
-		mlx->data.al = NULL;
-	}
-	if (mlx->data.num.count_cy == 0)
-	{
-		free(mlx->data.cy);
-		mlx->data.cy = NULL;
-	}
-	if (mlx->data.num.count_l == 0)
-	{
-		free(mlx->data.l);
-		mlx->data.l = NULL;
-	}
-	if (mlx->data.num.count_pl == 0)
-	{
-		free(mlx->data.pl);
-		mlx->data.pl = NULL;
-	}
-	if (mlx->data.num.count_sp == 0)
-	{
-		free(mlx->data.sp);
-		mlx->data.sp = NULL;
-	}
-	if (mlx->data.num.count_cn == 0)
-	{
-		free(mlx->data.cn);
-		mlx->data.cn = NULL;
-	}
-}
-
-void	check_cam_error(t_mlx *mlx)
-{
-	if (mlx->data.num.count_cam == 0)
-		print_error("should be at least one camera.");
-}
-
-void	check_input(char *argv, t_mlx *mlx)
-{
-	check_format(argv, ".rt");
-	push_data(open_data(argv), mlx);
-	close_non_data(mlx);
-	check_cam_error(mlx);
 }
 
 void	init_mlx_data(t_mlx *mlx)

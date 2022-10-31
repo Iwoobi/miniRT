@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   char_double.c                                      :+:      :+:    :+:   */
+/*   ft_char_double.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:26:30 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:15:04 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/10/31 23:56:40 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#include "../minirt.h"
 
-void	ft_back_num(char **str, double *n)
+static void	ft_back_num(char **str, double *n)
 {
 	int	back_n;
 	int	count;

@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:46:20 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 00:47:56 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@
 # define KEY_ESC		53
 
 # include <stdio.h>
-# include "get_next_line.h"
 # include <fcntl.h>
 # include <math.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <float.h>
+# include "get_next_line.h"
 # include "./mlx/mlx.h"
 
 typedef enum e_obj
@@ -206,15 +206,29 @@ typedef struct s_mlx
 int		ft_strlen(char *str);
 void	ft_strcopy(char *s, char *tmp);
 void	ft_strcopy2(char *s, char *tmp);
-double	ft_char_double(char *str, int *count);
 int		ft_strlen_2(char *str);
-char	**ft_split(char const *s, char c);
 void	*ft_calloc(size_t nmemb, size_t size);
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
 
 /*pasring*/
-int	check_bump_word(char *str);
+char	**ft_split(char const *s, char c);
+double	ft_char_double(char *str, int *count);
+void	check_input(char *argv, t_mlx *mlx);
+int		check_bump_word(char *str);
+void	print_error(char *str);
+void	push_a(char *str, t_mlx *mlx);
+void	push_c(char *str, t_mlx *mlx);
+void	push_l(char *str, t_mlx *mlx);
+void	push_sp(char *str, t_mlx *mlx);
+void	push_pl(char *str, t_mlx *mlx);
+void	push_cy(char *str, t_mlx *mlx);
+void	push_cn(char *str, t_mlx *mlx);
+
+/*utils*/
+void	check_format(char *argv, char *format);
+int	open_data(char *argv);
+int	div_str(char *str, char *div);
 void	print_error(char *str);
 
 /*print*/

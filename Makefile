@@ -6,7 +6,7 @@
 #    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/10/31 22:45:46 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/01 00:51:16 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,14 @@ CC = gcc -g
 NAME = miniRT
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
-SRCS = main.c char_double.c get_next_line.c get_next_line_utils.c mlx_init.c triangle.c utils.c print.c ft_split.c
+SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c get_next_line_utils.c \
+							check_input.c) \
+		$(addprefix utils/, utils1.c) \
+mlx_init.c utils.c print.c main.c 
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
 
-.o : .c
+%.o : %.c
 	${CC} ${CFLAGS} -c $< -o $@
 	
 ${NAME} : ${OBJS} ${MLX}
@@ -33,10 +36,13 @@ all : ${NAME}
 clean :
 	rm -f ${OBJS} ${MLX}
 	make clean -C mlx
-fclean: clean
+fclean:
+	make clean
 	rm -f ${NAME}
 	
 
-re: fclean all
+re:
+	make fclean
+	make all
 
 .PHONY : all clean fclean re-

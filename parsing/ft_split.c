@@ -6,11 +6,11 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/26 15:47:26 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/10/27 17:15:34 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 00:01:44 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#include "../minirt.h"
 
 static void	ft_free(char **str)
 {
