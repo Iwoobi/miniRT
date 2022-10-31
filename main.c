@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 00:46:27 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 01:16:49 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,6 @@ void	print_rot_data(t_mdata data)
 		printf("\n");
 		i++;
 	}
-}
-
-
-
-double	check_range(double res, double min, double max, char *msg)
-{
-	if (min > res || max < res)
-		print_error(msg);
-	return (res);
 }
 
 void	push_x_y_z(double *data, char **str)
@@ -154,76 +145,6 @@ t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx)
 		(*str)++;
 	return (BUMP);
 
-}
-
-t_texture	push_rgb(unsigned char *rgb, char **str)
-{
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while ((**str >= 9 && **str <= 13) || **str == 32)
-	{
-		(*str)++;
-		count++;
-	}
-	if (div_str(*str, "checker") == 1)
-	{
-		*str += 7;
-		return (CHECKER);
-	}
-	while (i < 3)
-	{
-		count = 0;
-		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, "invalid range of rgb data.");
-		*str += count;
-		if (**str != ',' && i != 2)
-			print_error("invalid rgb data.");
-		if (i != 2)
-			(*str)++;
-		i++;
-	}
-	return (NONE);
-}
-
-void	null_check(char *str)
-{
-	while ((*str >= 9 && *str <= 13) || *str == 32)
-		str++;
-	if (*str != '\0')
-		print_error("invalid data format.");
-}
-
-void	push_a(char *str, t_mlx *mlx)
-{
-	int			count;
-	t_alight	*save;
-
-	if (mlx->data.num.count_al > 0)
-		print_error("too much ambient.");
-	save = mlx->data.al;
-	count = 0;
-	str++;
-	while (mlx->data.num.count_al > count)
-	{
-		if (mlx->data.num.count_al - count == 1)
-		{
-			mlx->data.al->next = (t_alight *)malloc(sizeof(t_alight) * 1);
-			if (mlx->data.al->next == NULL)
-				print_error("malloc error.");
-			mlx->data.al->next->next = NULL;
-		}
-		mlx->data.al = mlx->data.al->next;
-		count++;
-	}
-	count = 0;
-	mlx->data.num.count_al += 1;
-	mlx->data.al->ratio = check_range(ft_char_double(str, &count), 0, 1, "invalid range of ambient ratio data.");
-	str += count;
-	push_rgb(&(mlx->data.al->rgb[0]), &str);
-	null_check(str);
-	mlx->data.al = save;
 }
 
 void	push_c(char *str, t_mlx *mlx)

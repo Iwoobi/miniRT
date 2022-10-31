@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 00:47:56 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 01:17:46 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,12 +224,15 @@ void	push_sp(char *str, t_mlx *mlx);
 void	push_pl(char *str, t_mlx *mlx);
 void	push_cy(char *str, t_mlx *mlx);
 void	push_cn(char *str, t_mlx *mlx);
+t_texture	push_rgb(unsigned char *rgb, char **str);
 
 /*utils*/
 void	check_format(char *argv, char *format);
 int	open_data(char *argv);
 int	div_str(char *str, char *div);
 void	print_error(char *str);
+double	check_range(double res, double min, double max, char *msg);
+void	null_check(char *str);
 
 /*print*/
 void	test_a(t_data mlx);

@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 00:35:46 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 00:45:03 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 00:54:35 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,11 @@ void	print_error(char *str)
 	write(STDERR_FILENO, str, ft_strlen(str));
 	write(STDERR_FILENO, "\n", 1);
 	exit(EXIT_FAILURE);
+}
+
+double	check_range(double res, double min, double max, char *msg)
+{
+	if (min > res || max < res)
+		print_error(msg);
+	return (res);
 }

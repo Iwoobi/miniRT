@@ -6,7 +6,7 @@
 #    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/01 00:51:16 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/01 01:17:18 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ NAME = miniRT
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
 SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c get_next_line_utils.c \
-							check_input.c) \
-		$(addprefix utils/, utils1.c) \
+							check_input.c push_a.c push_rgb.c) \
+		$(addprefix utils/, utils1.c utils2.c) \
 mlx_init.c utils.c print.c main.c 
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
