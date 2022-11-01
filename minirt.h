@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 20:58:18 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 21:06:06 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 # define MINIRT_H
 
 # define _USE_MATH_DEFINES
-# define PRESS 2
-# define CLOSED 17
-# define EPSILON 1e-300
-# define WINDOW_WIDTH	1600
-# define WINDOW_HEIGHT	900
-# define KEY_ESC		53
+# define PRESS 				2
+# define CLOSED 			17
+# define EPSILON 			1e-300
+# define WINDOW_WIDTH		1600
+# define WINDOW_HEIGHT		900
+# define KEY_ESC			53
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -202,16 +202,12 @@ typedef struct s_mlx
 	int		flag;
 }	t_mlx;
 
-/*데이터*/
-int		ft_strlen(char *str);
-void	ft_strcopy(char *s, char *tmp);
-void	ft_strcopy2(char *s, char *tmp);
-int		ft_strlen_2(char *str);
-void	*ft_calloc(size_t nmemb, size_t size);
 
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
-int	press_key(int key_code);
+void	init_mlx_data(t_mlx *mlx);
+int		press_key(int key_code);
+int	ft_close(t_mlx *mlx);
 
 /*pasring*/
 char	**ft_split(char const *s, char c);
@@ -231,7 +227,11 @@ void	push_x_y_z(double *data, char **str);
 void	push_normal_x_y_z(double *data, char **str);
 
 /*utils*/
-void	init_mlx_data(t_mlx *mlx);
+int		ft_strlen(char *str);
+void	ft_strcopy(char *s, char *tmp);
+void	ft_strcopy2(char *s, char *tmp);
+int		ft_strlen_2(char *str);
+void	*ft_calloc(size_t nmemb, size_t size);
 void	check_format(char *argv, char *format);
 int	open_data(char *argv);
 int	div_str(char *str, char *div);

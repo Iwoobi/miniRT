@@ -6,7 +6,7 @@
 #    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/01 20:50:59 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/01 21:03:47 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c \
 							push_object2.c push_object3.c push_object4.c \
 							push_data1.c push_data2.c utils1.c utils2.c) \
 		$(addprefix utils/, ft_math.c ft_math_vector1.c ft_math_vector2.c \
-							init_mlx_data.c mlx_init.c) \
-		 utils.c print.c main.c 
+							ft_utils.c init_mlx_data.c mlx_init.c) \
+		 print.c main.c
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
 

@@ -6,11 +6,18 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/26 23:11:54 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 20:53:26 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 21:05:56 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
+
+int	ft_close(t_mlx *mlx)
+{
+	mlx_destroy_window(mlx->mlx, mlx->win);
+	exit(0);
+	return (-1);
+}
 
 int	press_key(int key_code)
 {

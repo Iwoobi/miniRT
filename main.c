@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 20:59:44 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 21:06:21 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1086,12 +1086,7 @@ void	canvas_match(t_mlx *mlx)
 		i++;
 	}
 }
-int	ft_close(t_mlx *mlx)
-{
-	mlx_destroy_window(mlx->mlx, mlx->win);
-	exit(0);
-	return (-1);
-}
+
 void	exec_rot_data(t_mlx *mlx, t_mdata mdata)
 {
 	updata_rot(mlx, mdata);
