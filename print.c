@@ -6,11 +6,31 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 22:16:20 by youhan            #+#    #+#             */
-/*   Updated: 2022/10/31 23:30:30 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 20:56:41 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+void	test(t_data mlx)
+{
+	test_a(mlx);
+	test_c(mlx);
+	test_l(mlx);
+	test_cy(mlx);
+	test_cn(mlx);
+	test_pl(mlx);
+	test_sp(mlx);
+}
+
+void	ctest(t_data mlx)
+{
+	ctest_cy(mlx);
+	ctest_cn(mlx);
+	ctest_l(mlx);
+	ctest_pl(mlx);
+	ctest_sp(mlx);
+}
 
 void	test_c(t_data mlx)
 {
@@ -331,5 +351,25 @@ void	ctest_cn(t_data mlx)
 	}
 }
 
+void	print_rot_data(t_mdata data)
+{
+	int	i;
+	int	j;
 
+	printf("rot_data\n");
+	printf("%f  %f   %f\n",data.m[0], data.m[1], data.m[2]);
+
+	i = 0;
+	while (i < 3)
+	{
+		j=0;
+		while (j < 3)
+		{
+			printf("%f ", data.rot[3 * i + j]);
+			j++;
+		}
+		printf("\n");
+		i++;
+	}
+}
 

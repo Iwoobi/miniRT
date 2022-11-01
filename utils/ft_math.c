@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 19:25:18 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 13:41:03 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 20:51:51 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,4 +20,17 @@ double	ft_radian(int a)
 double	pow_2(double a)
 {
 	return (a * a);
+}
+
+double	equation_d(double a, double b, double c)
+{
+	return (pow_2(b) - 4 * (a * c));
+}
+
+double	find_f(double a, double b, double c, double flag)
+{
+	if (flag > 0)
+		return ((-b - sqrt(equation_d(a, b, c))) / (2 * a));
+	else
+		return ((-b + sqrt(equation_d(a, b, c))) / (2 * a));
 }

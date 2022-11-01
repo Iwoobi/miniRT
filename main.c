@@ -6,172 +6,11 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/07 18:43:50 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 13:51:14 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 20:59:44 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-
-void	hex_to_rgb(int hex, unsigned int *rgb)
-{
-	rgb[2] = hex % 256;
-	hex /= 256;
-	rgb[1] = hex % 256;
-	hex /= 256;
-	rgb[0] = hex;
-}
-
-void	hex_to_rgb_double(int hex, double *rgb)
-{
-	rgb[2] = hex % 256;
-	hex /= 256;
-	rgb[1] = hex % 256;
-	hex /= 256;
-	rgb[0] = hex;
-}
-
-void	print_rot_data(t_mdata data)
-{
-	int	i;
-	int	j;
-
-	printf("rot_data\n");
-	printf("%f  %f   %f\n",data.m[0], data.m[1], data.m[2]);
-
-	i = 0;
-	while (i < 3)
-	{
-		j=0;
-		while (j < 3)
-		{
-			printf("%f ", data.rot[3 * i + j]);
-			j++;
-		}
-		printf("\n");
-		i++;
-	}
-}
-
-void	init_mlx_data(t_mlx *mlx)
-{
-	int	i;
-	mlx->size[0] = WINDOW_WIDTH;
-	mlx->size[1] = WINDOW_HEIGHT;
-	mlx->cam_num = 0;
-	mlx->data.num.count_l = 0;
-	mlx->data.num.count_al = 0;
-	mlx->data.num.count_cam = 0;
-	mlx->data.num.count_sp = 0;
-	mlx->data.num.count_pl = 0;
-	mlx->data.num.count_cy = 0;
-	mlx->data.num.count_cn = 0;
-	mlx->ray = (t_ray **)malloc(sizeof(t_ray *) * WINDOW_WIDTH);
-	if (mlx->ray == NULL)
-		print_error("malloc error.");
-	i = 0;
-	while (i < WINDOW_WIDTH)
-	{
-		mlx->ray[i] = malloc(sizeof(t_ray) * WINDOW_HEIGHT);
-		if (mlx->ray[i] == NULL)
-			print_error("malloc error.");
-		i++;
-	}
-	mlx->data.cn = (t_cone *)malloc(sizeof(t_cone) * 1);
-	mlx->data.al = (t_alight *)malloc(sizeof(t_alight) * 1);
-	mlx->data.cam = (t_cam *)malloc(sizeof(t_cam) * 1);
-	mlx->data.l = (t_light *)malloc(sizeof(t_light) * 1);
-	mlx->data.pl = (t_plane *)malloc(sizeof(t_plane) * 1);
-	mlx->data.cy = (t_cylinder *)malloc(sizeof(t_cylinder) * 1);
-	mlx->data.sp = (t_sphere *)malloc(sizeof(t_sphere) * 1);
-	if (mlx->data.al == NULL || mlx->data.cam == NULL || mlx->data.l == NULL)
-		print_error("malloc error.");
-	if (mlx->data.pl == NULL || mlx->data.cy == NULL || mlx->data.sp == NULL)
-		print_error("malloc error.");
-	if (mlx->data.cn == NULL)
-		print_error("malloc error.");
-	mlx->data.al->next = NULL;
-	mlx->data.cn->next = NULL;
-	mlx->data.l->next = NULL;
-	mlx->data.cam->next = NULL;
-	mlx->data.pl->next = NULL;
-	mlx->data.cy->next = NULL;
-	mlx->data.sp->next = NULL;
-}
-
-int	press_key(int key_code)
-{
-	if (key_code == KEY_ESC)
-		exit(0);
-	return (1);
-}
-
-double	inner_product(double *u, double *w)
-{
-	return (u[0] * w[0] + u[1] * w[1] + u[2] * w[2]);
-}
-
-void	cross_product(double *u, double *w, double *result)
-{
-	result[0] = u[1] * w[2] - u[2] * w[1];
-	result[1] = u[2] * w[0] - u[0] * w[2];
-	result[2] = u[0] * w[1] - u[1] * w[0];
-}
-
-double	vector_size(double *x)
-{
-	return (sqrt(x[0] * x[0] + x[1] * x[1] + x[2] * x[2]));
-}
-
-void	vector_n(double *x, double val, double *result)
-{
-	result[0] = x[0] * val;
-	result[1] = x[1] * val;
-	result[2] = x[2] * val;
-}
-
-void	vector_plus(double *x, double *y, double *result)
-{
-	result[0] = x[0] + y[0];
-	result[1] = x[1] + y[1];
-	result[2] = x[2] + y[2];
-}
-
-void	vector_minus(double *x, double *y, double *result)
-{
-	result[0] = x[0] - y[0];
-	result[1] = x[1] - y[1];
-	result[2] = x[2] - y[2];
-}
-
-void	vector_copy(double *x, double *copy)
-{
-	x[0] = copy[0];
-	x[1] = copy[1];
-	x[2] = copy[2];
-}
-
-void	normalize_vector(double *vec)
-{
-	double	size;
-
-	size = vector_size(vec);
-	vec[0] /= size;
-	vec[1] /= size;
-	vec[2] /= size;
-}
-
-double	equation_d(double a, double b, double c)
-{
-	return(pow_2(b) - 4 * (a * c));
-}
-
-double	find_f(double a, double b, double c, double flag)
-{
-	if (flag > 0)
-		return ((-b - sqrt(equation_d(a, b, c))) / (2 * a));
-	else
-		return ((-b + sqrt(equation_d(a, b, c))) / (2 * a));
-}
 
 void	 rot_matrix(double *x, double *y, double *z, double *result)
 {
@@ -359,16 +198,7 @@ void	updata_rot(t_mlx *mlx, t_mdata mdata)
 	updata_rot_cn(&(mlx->data), mdata);
 }
 
-void	test(t_data mlx)
-{
-	test_a(mlx);
-	test_c(mlx);
-	test_l(mlx);
-	test_cy(mlx);
-	test_cn(mlx);
-	test_pl(mlx);
-	test_sp(mlx);
-}
+
 
 void	copy_rot_l(t_mlx *mlx)
 {
@@ -461,15 +291,6 @@ void	copy_rot_data(t_mlx *mlx)
 	copy_rot_pl(mlx);
 	copy_rot_cy(mlx);
 	copy_rot_cn(mlx);
-}
-
-void	ctest(t_data mlx)
-{
-	ctest_cy(mlx);
-	ctest_cn(mlx);
-	ctest_l(mlx);
-	ctest_pl(mlx);
-	ctest_sp(mlx);
 }
 
 void	axis_x(double *result)

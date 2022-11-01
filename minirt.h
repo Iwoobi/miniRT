@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 13:40:48 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 20:58:18 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,7 @@ void	*ft_calloc(size_t nmemb, size_t size);
 
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
+int	press_key(int key_code);
 
 /*pasring*/
 char	**ft_split(char const *s, char c);
@@ -230,6 +231,7 @@ void	push_x_y_z(double *data, char **str);
 void	push_normal_x_y_z(double *data, char **str);
 
 /*utils*/
+void	init_mlx_data(t_mlx *mlx);
 void	check_format(char *argv, char *format);
 int	open_data(char *argv);
 int	div_str(char *str, char *div);
@@ -241,8 +243,22 @@ int		check_bump_word(char *str);
 /*math*/
 double	pow_2(double a);
 double	ft_radian(int a);
+double	equation_d(double a, double b, double c);
+double	find_f(double a, double b, double c, double flag);
+
+double	inner_product(double *u, double *w);
+void	cross_product(double *u, double *w, double *result);
+double	vector_size(double *x);
+void	normalize_vector(double *vec);
+void	vector_copy(double *x, double *copy);
+void	vector_n(double *x, double val, double *result);
+void	vector_plus(double *x, double *y, double *result);
+void	vector_minus(double *x, double *y, double *result);
+void	hex_to_rgb(int hex, unsigned int *rgb);
+void	hex_to_rgb_double(int hex, double *rgb);
 
 /*print*/
+void	test(t_data mlx);
 void	test_a(t_data mlx);
 void	test_c(t_data mlx);
 void	test_l(t_data mlx);
@@ -251,10 +267,13 @@ void	test_sp(t_data mlx);
 void	test_pl(t_data mlx);
 void	test_cn(t_data mlx);
 
-
+void	ctest(t_data mlx);
 void	ctest_l(t_data mlx);
 void	ctest_cy(t_data mlx);
 void	ctest_sp(t_data mlx);
 void	ctest_pl(t_data mlx);
 void	ctest_cn(t_data mlx);
+
+void	print_rot_data(t_mdata data);
+
 #endif
