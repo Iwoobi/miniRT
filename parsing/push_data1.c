@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   push_rgb.c                                         :+:      :+:    :+:   */
+/*   push_data1.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 01:16:18 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 01:20:23 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 13:41:55 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ t_texture	push_rgb(unsigned char *rgb, char **str)
 	}
 	while (i < 3)
 	{
-		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, "invalid range of rgb data.");
+		rgb[i] = check_range(ft_char_double(*str, &count), 0, 255, \
+						"invalid range of rgb data.");
 		*str += count;
 		if (**str != ',' && i != 2)
 			print_error("invalid rgb data.");
@@ -37,4 +38,43 @@ t_texture	push_rgb(unsigned char *rgb, char **str)
 		i++;
 	}
 	return (NONE);
+}
+
+void	push_x_y_z(double *data, char **str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	while (i < 3)
+	{
+		count = 0;
+		data[i] = ft_char_double(*str, &count);
+		*str += count;
+		if (**str != ',' && i != 2)
+			print_error("invalid vector data.");
+		if (i != 2)
+			(*str)++;
+		i++;
+	}
+}
+
+void	push_normal_x_y_z(double *data, char **str)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	while (i < 3)
+	{
+		count = 0;
+		data[i] = check_range(ft_char_double(*str, &count), -1, 1, \
+						"invalid range of normal vector data.");
+		*str += count;
+		if (**str != ',' && i != 2)
+			print_error("invalid normal vector data.");
+		if (i != 2)
+			(*str)++;
+		i++;
+	}
 }

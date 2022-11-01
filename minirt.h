@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 01:45:03 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 13:40:48 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,6 +208,7 @@ void	ft_strcopy(char *s, char *tmp);
 void	ft_strcopy2(char *s, char *tmp);
 int		ft_strlen_2(char *str);
 void	*ft_calloc(size_t nmemb, size_t size);
+
 /*mlx*/
 void	ft_mlx_init(t_mlx *my_mlx);
 
@@ -215,7 +216,6 @@ void	ft_mlx_init(t_mlx *my_mlx);
 char	**ft_split(char const *s, char c);
 double	ft_char_double(char *str, int *count);
 void	check_input(char *argv, t_mlx *mlx);
-int		check_bump_word(char *str);
 void	print_error(char *str);
 void	push_a(char *str, t_mlx *mlx);
 void	push_c(char *str, t_mlx *mlx);
@@ -225,6 +225,9 @@ void	push_pl(char *str, t_mlx *mlx);
 void	push_cy(char *str, t_mlx *mlx);
 void	push_cn(char *str, t_mlx *mlx);
 t_texture	push_rgb(unsigned char *rgb, char **str);
+t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx);
+void	push_x_y_z(double *data, char **str);
+void	push_normal_x_y_z(double *data, char **str);
 
 /*utils*/
 void	check_format(char *argv, char *format);
@@ -233,6 +236,11 @@ int	div_str(char *str, char *div);
 void	print_error(char *str);
 double	check_range(double res, double min, double max, char *msg);
 void	null_check(char *str);
+int		check_bump_word(char *str);
+
+/*math*/
+double	pow_2(double a);
+double	ft_radian(int a);
 
 /*print*/
 void	test_a(t_data mlx);

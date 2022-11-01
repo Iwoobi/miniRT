@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 00:07:15 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 00:50:41 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/01 13:50:33 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@ void	check_input(char *argv, t_mlx *mlx)
 	push_data(open_data(argv), mlx);
 	close_none_data(mlx);
 	close_none_object(mlx);
-	// check_cam_error(mlx);
 	if (mlx->data.num.count_cam == 0)
 		print_error("should be at least one camera.");
 }
