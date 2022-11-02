@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/01 21:06:06 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/02 22:14:07 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # define _USE_MATH_DEFINES
 # define PRESS 				2
 # define CLOSED 			17
-# define EPSILON 			1e-300
+# define EPSILON 			1e-10
 # define WINDOW_WIDTH		1600
 # define WINDOW_HEIGHT		900
 # define KEY_ESC			53
@@ -239,10 +239,13 @@ void	print_error(char *str);
 double	check_range(double res, double min, double max, char *msg);
 void	null_check(char *str);
 int		check_bump_word(char *str);
+void	axis_x(double *result);
+void	axis_y(double *result);
+void	axis_z(double *result);
 
 /*math*/
 double	pow_2(double a);
-double	ft_radian(int a);
+double	deg_to_rad(double degree);
 double	equation_d(double a, double b, double c);
 double	find_f(double a, double b, double c, double flag);
 
@@ -256,6 +259,40 @@ void	vector_plus(double *x, double *y, double *result);
 void	vector_minus(double *x, double *y, double *result);
 void	hex_to_rgb(int hex, unsigned int *rgb);
 void	hex_to_rgb_double(int hex, double *rgb);
+
+/*rotate*/
+
+void	copy_rot_l(t_mlx *mlx);
+void	copy_rot_sp(t_mlx *mlx);
+void	copy_rot_pl(t_mlx *mlx);
+void	copy_rot_cy(t_mlx *mlx);
+void	copy_rot_cn(t_mlx *mlx);
+void	updata_rot_l(t_data *data, t_mdata mdata);
+void	updata_rot_sp(t_data *data, t_mdata mdata);
+void	updata_rot_pl(t_data *data, t_mdata mdata);
+void	updata_rot_cy(t_data *data, t_mdata mdata);
+void	updata_rot_cn(t_data *data, t_mdata mdata);
+t_mdata	data_cam_num_init(t_mlx mlx);
+void	trans_rot_data(double x[3], t_mdata mdata);
+int		rot_data_check(t_cam cam);
+void	exec_rot_data(t_mlx *mlx, t_mdata mdata);
+void	copy_rot_data(t_mlx *mlx);
+
+
+
+/*uv*/
+void	uv_axis_sp(double *d, t_mlx *mlx);
+void	uv_axis_cn(t_mlx *mlx, double *d);
+void	uv_axis_cy(t_mlx *mlx, double *d);
+void	uv_axis_pl(double *d, t_mlx *mlx);
+void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj);
+
+/*hit*/
+
+void	check_hit_cy(t_mlx *mlx, double *d, int i, int j);
+void	check_hit_cn(t_mlx *mlx, double *d, int i, int j);
+void	check_hit_sp(t_mlx *mlx, double *d, int i, int j);
+void	check_hit_pl(t_mlx *mlx, double *d, int i, int j);
 
 /*print*/
 void	test(t_data mlx);

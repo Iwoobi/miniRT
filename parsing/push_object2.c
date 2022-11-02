@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_object2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:16:16 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 13:49:42 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/02 17:10:49 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	push_l(char *str, t_mlx *mlx)
 	int		count;
 	t_light	*save;
 
-	if (mlx->data.num.count_l > 0)
+	if (mlx->data.num.count_l > 1)
 		print_error("too much light.");
 	save = mlx->data.l;
 	str++;

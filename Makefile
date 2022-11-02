@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
+#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/01 21:03:47 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/02 21:55:26 by youhan           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,12 @@ SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c \
 							push_object2.c push_object3.c push_object4.c \
 							push_data1.c push_data2.c utils1.c utils2.c) \
 		$(addprefix utils/, ft_math.c ft_math_vector1.c ft_math_vector2.c \
-							ft_utils.c init_mlx_data.c mlx_init.c) \
-		 print.c main.c
+							ft_utils.c init_mlx_data.c mlx_init.c axis.c) \
+		$(addprefix rotate/, copy_data.c rotate_init.c rotate_utils.c rotate.c \
+							updata_rot.c) \
+		$(addprefix axis_uv/,normal_vec.c find_uv_cn.c find_uv_cy.c \
+							find_uv_pl.c find_uv_sp.c) \
+		print.c main.c
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
 

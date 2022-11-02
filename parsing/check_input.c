@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_input.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 00:07:15 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 13:50:33 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/02 17:15:21 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ static void	close_none_data(t_mlx *mlx)
 		free(mlx->data.l);
 		mlx->data.l = NULL;
 	}
+	if (mlx->data.num.count_cam != 1)
+		print_error("should be at least one camera.");
+	if (mlx->data.num.count_al > 1)
+		print_error("should be one alight.");
 }
 
 static void	close_none_object(t_mlx *mlx)
@@ -90,6 +94,4 @@ void	check_input(char *argv, t_mlx *mlx)
 	push_data(open_data(argv), mlx);
 	close_none_data(mlx);
 	close_none_object(mlx);
-	if (mlx->data.num.count_cam == 0)
-		print_error("should be at least one camera.");
 }

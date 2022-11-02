@@ -1,36 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_math.c                                          :+:      :+:    :+:   */
+/*   axis.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/19 19:25:18 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/02 21:02:26 by youhan           ###   ########.fr       */
+/*   Created: 2022/11/02 21:05:01 by youhan            #+#    #+#             */
+/*   Updated: 2022/11/02 21:05:32 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
 
-double	pow_2(double a)
+void	axis_x(double *result)
 {
-	return (a * a);
+	result[0] = 1;
+	result[1] = 0;
+	result[2] = 0;
 }
 
-double	equation_d(double a, double b, double c)
+void	axis_y(double *result)
 {
-	return (pow_2(b) - 4 * (a * c));
+	result[0] = 0;
+	result[1] = 1;
+	result[2] = 0;
 }
 
-double	find_f(double a, double b, double c, double flag)
+void	axis_z(double *result)
 {
-	if (flag > 0)
-		return ((-b - sqrt(equation_d(a, b, c))) / (2 * a));
-	else
-		return ((-b + sqrt(equation_d(a, b, c))) / (2 * a));
-}
-
-double deg_to_rad(double degree)
-{
-	return (degree * M_PI / 180);
+	result[0] = 0;
+	result[1] = 0;
+	result[2] = 1;
 }
