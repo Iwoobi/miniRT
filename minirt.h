@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/03 16:21:18 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/03 16:45:44 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # define WINDOW_WIDTH		1600
 # define WINDOW_HEIGHT		900
 # define KEY_ESC			53
+# define PIXEL				1
 
 # include <stdio.h>
 # include <fcntl.h>
@@ -306,6 +307,7 @@ int		check_hit_cn_d(double *d, double *n, double *c, t_mlx *mlx);
 void	check_hit_sp(t_mlx *mlx, double *d, int i, int j);
 void	check_hit_pl(t_mlx *mlx, double *d, int i, int j);
 void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj);
+void	canvas_match(t_mlx *mlx);
 
 /*ray_tracer*/
 void	phong_init(t_mlx *mlx);

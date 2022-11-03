@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
+#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/03 16:22:52 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/03 16:46:11 by youhan           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c \
 		$(addprefix axis_uv/, normal_vec.c find_uv_cn.c find_uv_cy.c \
 							  find_uv_pl.c find_uv_sp.c) \
 		$(addprefix hit/, hit_cn.c hit_cy.c hit_cn_utils.c hit_cy_utils.c \
-						  hit_pl.c hit_sp.c color_select.c) \
+						  hit_pl.c hit_sp.c color_select.c view_vector.c) \
 		$(addprefix ray_tracer/, phong_init.c phong_reflection.c gray_cn.c gray_cy.c \
 								 gray_sp_pl.c phong_utils.c) \
 		print.c main.c
