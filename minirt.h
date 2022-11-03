@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/02 22:14:07 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/03 16:21:18 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,15 @@ typedef enum e_texture
 	CHECKER,
 	BUMP
 }	t_texture;
+
+typedef struct s_cone_utils
+{
+	double	head[3];
+	double	dot[3];
+	double	a[3];
+	double	val;
+	int		i;
+}	t_cone_utils;
 
 typedef struct s_img
 {
@@ -290,9 +299,26 @@ void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj);
 /*hit*/
 
 void	check_hit_cy(t_mlx *mlx, double *d, int i, int j);
+int		check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx);
 void	check_hit_cn(t_mlx *mlx, double *d, int i, int j);
+void	find_cone_head(double *n, double h, double *c, double *result);
+int		check_hit_cn_d(double *d, double *n, double *c, t_mlx *mlx);
 void	check_hit_sp(t_mlx *mlx, double *d, int i, int j);
 void	check_hit_pl(t_mlx *mlx, double *d, int i, int j);
+void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj);
+
+/*ray_tracer*/
+void	phong_init(t_mlx *mlx);
+void	phong_reset(unsigned int phong[3][3]);
+void	reset_phong_light(unsigned int phong[3][3]);
+int	apply_color(unsigned int *rgb);
+void	ambient_light(t_mlx *mlx, int i, int j, unsigned int *amb);
+void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff);
+void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec);
+int	check_hit_gray_sp(t_mlx *mlx, int i, int j);
+int	check_hit_gray_pl(t_mlx *mlx, int i, int j);
+int	check_hit_gray_cy(t_mlx *mlx, int i, int j);
+int	check_hit_gray_cn(t_mlx *mlx, int i, int j);
 
 /*print*/
 void	test(t_data mlx);

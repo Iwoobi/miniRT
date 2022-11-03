@@ -1,13 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hit_sp.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/11/03 15:00:03 by chanhyle          #+#    #+#             */
+/*   Updated: 2022/11/03 15:11:29 by chanhyle         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../minirt.h"
+
 int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 {
 	double	a;
 	double	r;
 
 	r = mlx->data.sp->r;
-	a = equation_d(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r);
+	a = equation_d(pow_2(vector_size(d)), -2 * inner_product(d, c), \
+					pow_2(vector_size(c)) - r * r);
 	if (a >= 0.000001)
 	{
-		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), pow_2(vector_size(c)) - r * r, 1);
+		mlx->t = find_f(pow_2(vector_size(d)), -2 * inner_product(d, c), \
+						pow_2(vector_size(c)) - r * r, 1);
 		if (mlx->t < 0.0001)
 		{
 			mlx->t = -2;
@@ -24,7 +40,7 @@ int	check_hit_sp_d(double *d, double *c, t_mlx *mlx)
 void	normal_vector_sp(t_mlx *mlx, double	*d, int i, int j)
 {
 	double	x[3];
-	
+
 	x[0] = d[0] * mlx->t - mlx->data.sp->cc[0];
 	x[1] = d[1] * mlx->t - mlx->data.sp->cc[1];
 	x[2] = d[2] * mlx->t - mlx->data.sp->cc[2];

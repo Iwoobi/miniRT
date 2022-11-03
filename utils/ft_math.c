@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_math.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 19:25:18 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/02 21:02:26 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/03 14:58:32 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ double	find_f(double a, double b, double c, double flag)
 		return ((-b + sqrt(equation_d(a, b, c))) / (2 * a));
 }
 
-double deg_to_rad(double degree)
+double	deg_to_rad(double degree)
 {
 	return (degree * M_PI / 180);
 }
