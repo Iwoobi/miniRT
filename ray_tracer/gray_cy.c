@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   gray_cy.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 16:04:02 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/03 16:10:01 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/03 18:17:55 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ static int	check_hit_gray_cy_bot_d(double *d, double *dot, t_mlx *mlx)
 	double	t;
 
 	vector_minus(mlx->data.cy->cc, dot, vec);
-	if (inner_product(d, mlx->data.cy->nc) < 0.000001)
+	if (inner_product(d, mlx->data.cy->nc) <= 0)
 		return (0);
 	t = inner_product(vec, mlx->data.cy->nc) \
 		/ inner_product(d, mlx->data.cy->nc);
-	if (t < 0.000001)
+	if (t < 0.001)
 		return (0);
 	vector_n(d, t, vec);
 	vector_plus(vec, dot, vec);

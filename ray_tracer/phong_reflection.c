@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   phong_reflection.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 15:55:39 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/03 16:08:33 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/03 18:34:16 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 	normalize_vector(light);
 	vector_n(mlx->ray[i][j].d, -1, n);
 	val = inner_product(n, light);
-	if (val < EPSILON)
+	if (val < 0)
 		val = 0;
-	val = pow(val, 10);
+	val = pow(val, 30);
 	spec[0] = 4 * mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] \
-		* mlx->data.al->ratio * val / 255;
+		* mlx->data.l->ratio * val / 255;
 	spec[1] = 4 * mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] \
-		* mlx->data.al->ratio * val / 255;
+		* mlx->data.l->ratio * val / 255;
 	spec[2] = 4 * mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] \
-		* mlx->data.al->ratio * val / 255;
+		* mlx->data.l->ratio * val / 255;
 }
