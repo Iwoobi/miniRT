@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 13:32:39 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/01 13:49:54 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/05 14:38:19 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,11 @@ static t_plane	*create_new_plane(int obj_cnt, t_plane *obj_ptr)
 
 void	push_pl(char *str, t_mlx *mlx)
 {
-	int		count;
 	t_plane	*save;
 
 	save = mlx->data.pl;
 	str += 2;
 	mlx->data.pl = create_new_plane(mlx->data.num.count_pl, mlx->data.pl);
-	count = 0;
 	mlx->data.num.count_pl += 1;
 	push_x_y_z(&(mlx->data.pl->x[0]), &str);
 	push_normal_x_y_z(&(mlx->data.pl->n[0]), &str);

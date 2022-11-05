@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
+#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/03 16:46:11 by youhan           ###   ########.fr        #
+#    Updated: 2022/11/05 14:42:48 by chanhyle         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = gcc -g
+CC = gcc
 NAME = miniRT
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
@@ -28,7 +28,7 @@ SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c \
 						  hit_pl.c hit_sp.c color_select.c view_vector.c) \
 		$(addprefix ray_tracer/, phong_init.c phong_reflection.c gray_cn.c gray_cy.c \
 								 gray_sp_pl.c phong_utils.c) \
-		print.c main.c
+		main.c
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
 
@@ -47,10 +47,10 @@ all : ${NAME}
 clean :
 	rm -f ${OBJS} ${MLX}
 	make clean -C mlx
+
 fclean:
 	make clean
 	rm -f ${NAME}
-	
 
 re:
 	make fclean
