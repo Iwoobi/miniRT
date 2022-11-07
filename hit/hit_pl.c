@@ -6,7 +6,7 @@
 /*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/02 22:04:46 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/03 15:11:43 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/07 19:24:03 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,15 @@ int	check_hit_pl_d(double *d, double *x, double *n, t_mlx *mlx)
 
 void	normal_vector_pl(t_mlx *mlx, int i, int j)
 {
-	vector_copy(mlx->ray[i][j].n, mlx->data.pl->nc);
+	double	vec[3];
+
+	if (inner_product(mlx->data.pl->nc, mlx->ray[i][j].d) > 0)
+		vector_copy(mlx->ray[i][j].n, mlx->data.pl->nc);
+	else
+	{
+		vector_n(mlx->data.pl->nc, -1, vec);
+		vector_copy(mlx->ray[i][j].n, vec);
+	}
 }
 
 void	check_hit_pl(t_mlx *mlx, double *d, int i, int j)

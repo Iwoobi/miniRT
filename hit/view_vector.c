@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   view_vector.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 16:42:33 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/03 16:49:23 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/07 18:31:40 by chanhyle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	hit_point(t_mlx *mlx, int i, int j)
 		* tan(deg_to_rad(mlx->data.cam->fov) / 2) \
 		- tan(deg_to_rad(mlx->data.cam->fov) / 2) + (PIXEL - 1) * (1 / 2) * 2 \
 		* tan(deg_to_rad(mlx->data.cam->fov) / 2) / 899) / 16;
+	d[1] *= -1;
 	d[2] = 1;
 	normalize_vector(d);
 	mlx->ray[i][j].d[0] = d[0];
