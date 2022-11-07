@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 15:55:39 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/03 18:34:16 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/07 20:13:08 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 
 	vector_minus(mlx->data.l->xc, mlx->ray[i][j].dot, light);
 	val = inner_product(light, mlx->ray[i][j].n);
+	if (val < 0)
+		return ;
 	vector_n(mlx->ray[i][j].n, 2 * val, n);
 	vector_minus(n, light, light);
 	normalize_vector(light);
@@ -57,10 +59,10 @@ void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec)
 	if (val < 0)
 		val = 0;
 	val = pow(val, 30);
-	spec[0] = 4 * mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] \
+	spec[0] = mlx->data.l->rgb[0] * mlx->ray[i][j].rgb[0] \
 		* mlx->data.l->ratio * val / 255;
-	spec[1] = 4 * mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] \
+	spec[1] = mlx->data.l->rgb[1] * mlx->ray[i][j].rgb[1] \
 		* mlx->data.l->ratio * val / 255;
-	spec[2] = 4 * mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] \
+	spec[2] = mlx->data.l->rgb[2] * mlx->ray[i][j].rgb[2] \
 		* mlx->data.l->ratio * val / 255;
 }

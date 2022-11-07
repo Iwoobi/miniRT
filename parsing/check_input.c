@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/01 00:07:15 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/02 17:15:21 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/07 19:33:17 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ void	check_input(char *argv, t_mlx *mlx)
 {
 	check_format(argv, ".rt");
 	push_data(open_data(argv), mlx);
+	if (mlx->data.num.count_al > 1)
+		print_error("too many alight");
 	close_none_data(mlx);
 	close_none_object(mlx);
 }

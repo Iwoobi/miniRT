@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+         #
+#    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/05 14:42:48 by chanhyle         ###   ########.fr        #
+#    Updated: 2022/11/07 20:33:53 by youhan           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = gcc
+CC = cc
 NAME = miniRT
 CFLAGS = -Wall -Werror -Wextra
 CFLAG = -Lmlx -lmlx -framework OpenGL -framework AppKit
@@ -27,16 +27,25 @@ SRCS = $(addprefix parsing/, ft_char_double.c ft_split.c get_next_line.c \
 		$(addprefix hit/, hit_cn.c hit_cy.c hit_cn_utils.c hit_cy_utils.c \
 						  hit_pl.c hit_sp.c color_select.c view_vector.c) \
 		$(addprefix ray_tracer/, phong_init.c phong_reflection.c gray_cn.c gray_cy.c \
-								 gray_sp_pl.c phong_utils.c) \
-		main.c
+								 gray_sp_pl.c phong_utils.c)
+SRCS_MAIN = main.c
+SRCS_BONUS = bonus/main_bonus.c
 MLX = libmlx.a
 OBJS = ${SRCS:.c=.o}
+MAIN_OBJ = ${SRCS_MAIN:.c=.o}
+BONUS_OBJS = ${SRCS_BONUS:.c=.o}
+
+ifdef FLAG_BONUS
+	OBJ = ${OBJS} ${BONUS_OBJS}
+else
+	OBJ = ${OBJS} ${MAIN_OBJ}
+endif
 
 %.o : %.c
 	${CC} ${CFLAGS} -c $< -o $@
 	
-${NAME} : ${OBJS} ${MLX}
-	${CC} ${CFLAG} ${CFLAGS} -o ${NAME} ${OBJS} ${MLX}
+${NAME} : ${OBJ} ${MLX}
+	${CC} ${CFLAG} ${CFLAGS} -o ${NAME} ${OBJ} ${MLX}
 
 ${MLX} : 
 	make -C mlx
@@ -45,7 +54,7 @@ ${MLX} :
 all : ${NAME}
 
 clean :
-	rm -f ${OBJS} ${MLX}
+	rm -f ${OBJS} ${MLX} ${MAIN_OBJ} ${BONUS_OBJS}
 	make clean -C mlx
 
 fclean:
@@ -55,5 +64,8 @@ fclean:
 re:
 	make fclean
 	make all
+
+bonus :
+	@make FLAG_BONUS=1 all
 
 .PHONY : all clean fclean re-

@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/03 16:45:44 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/07 19:32:59 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,24 +321,5 @@ int	check_hit_gray_sp(t_mlx *mlx, int i, int j);
 int	check_hit_gray_pl(t_mlx *mlx, int i, int j);
 int	check_hit_gray_cy(t_mlx *mlx, int i, int j);
 int	check_hit_gray_cn(t_mlx *mlx, int i, int j);
-
-/*print*/
-void	test(t_data mlx);
-void	test_a(t_data mlx);
-void	test_c(t_data mlx);
-void	test_l(t_data mlx);
-void	test_cy(t_data mlx);
-void	test_sp(t_data mlx);
-void	test_pl(t_data mlx);
-void	test_cn(t_data mlx);
-
-void	ctest(t_data mlx);
-void	ctest_l(t_data mlx);
-void	ctest_cy(t_data mlx);
-void	ctest_sp(t_data mlx);
-void	ctest_pl(t_data mlx);
-void	ctest_cn(t_data mlx);
-
-void	print_rot_data(t_mdata data);
 
 #endif

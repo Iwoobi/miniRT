@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   phong_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chanhyle <chanhyle@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/03 15:52:28 by chanhyle          #+#    #+#             */
-/*   Updated: 2022/11/03 16:02:04 by chanhyle         ###   ########.fr       */
+/*   Updated: 2022/11/07 19:27:13 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ static void	phong_point(t_mlx *mlx, int i, int j)
 
 	save = mlx->data.l;
 	phong_reset(phong);
-	ambient_light(mlx, i, j, phong[0]);
+	if (mlx->data.num.count_al != 0)
+		ambient_light(mlx, i, j, phong[0]);
 	mlx->ray[i][j].sum_rgb[0] += phong[0][0];
 	mlx->ray[i][j].sum_rgb[1] += phong[0][1];
 	mlx->ray[i][j].sum_rgb[2] += phong[0][2];
