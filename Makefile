@@ -6,7 +6,7 @@
 #    By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/09/19 17:58:34 by youhan            #+#    #+#              #
-#    Updated: 2022/11/07 20:33:53 by youhan           ###   ########.fr        #
+#    Updated: 2022/11/07 20:38:37 by youhan           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,6 +66,6 @@ re:
 	make all
 
 bonus :
-	@make FLAG_BONUS=1 all
+	make FLAG_BONUS=1 all
 
-.PHONY : all clean fclean re-
+.PHONY : all clean fclean re bonus

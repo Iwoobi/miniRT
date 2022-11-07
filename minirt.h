@@ -6,7 +6,7 @@
 /*   By: youhan <youhan@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 18:06:43 by youhan            #+#    #+#             */
-/*   Updated: 2022/11/07 19:32:59 by youhan           ###   ########.fr       */
+/*   Updated: 2022/11/07 21:08:44 by youhan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ typedef struct s_sphere
 	struct s_sphere	*next;
 }	t_sphere;
 
-
 typedef struct s_cylinder
 {
 	double				c[3];
@@ -133,14 +132,14 @@ typedef struct s_cone
 	struct s_cone	*next;
 }	t_cone;
 
-typedef	struct s_alight
+typedef struct s_alight
 {
 	double			ratio;
 	unsigned char	rgb[3];
 	struct s_alight	*next;
 }	t_alight;
 
-typedef	struct s_cam
+typedef struct s_cam
 {
 	double			x[3];
 	double			n[3];
@@ -169,7 +168,6 @@ typedef struct s_count
 	int	count_cy;
 	int	count_cn;
 }	t_count;
-
 
 typedef struct s_data
 {
@@ -212,114 +210,110 @@ typedef struct s_mlx
 	int		flag;
 }	t_mlx;
 
-
 /*mlx*/
-void	ft_mlx_init(t_mlx *my_mlx);
-void	init_mlx_data(t_mlx *mlx);
-int		press_key(int key_code);
-int	ft_close(t_mlx *mlx);
+void		ft_mlx_init(t_mlx *my_mlx);
+void		init_mlx_data(t_mlx *mlx);
+int			press_key(int key_code);
+int			ft_close(t_mlx *mlx);
 
 /*pasring*/
-char	**ft_split(char const *s, char c);
-double	ft_char_double(char *str, int *count);
-void	check_input(char *argv, t_mlx *mlx);
-void	print_error(char *str);
-void	push_a(char *str, t_mlx *mlx);
-void	push_c(char *str, t_mlx *mlx);
-void	push_l(char *str, t_mlx *mlx);
-void	push_sp(char *str, t_mlx *mlx);
-void	push_pl(char *str, t_mlx *mlx);
-void	push_cy(char *str, t_mlx *mlx);
-void	push_cn(char *str, t_mlx *mlx);
+char		**ft_split(char const *s, char c);
+double		ft_char_double(char *str, int *count);
+void		check_input(char *argv, t_mlx *mlx);
+void		print_error(char *str);
+void		push_a(char *str, t_mlx *mlx);
+void		push_c(char *str, t_mlx *mlx);
+void		push_l(char *str, t_mlx *mlx);
+void		push_sp(char *str, t_mlx *mlx);
+void		push_pl(char *str, t_mlx *mlx);
+void		push_cy(char *str, t_mlx *mlx);
+void		push_cn(char *str, t_mlx *mlx);
 t_texture	push_rgb(unsigned char *rgb, char **str);
 t_texture	push_xpm(t_xpm *xpm, char **str, t_mlx *mlx);
-void	push_x_y_z(double *data, char **str);
-void	push_normal_x_y_z(double *data, char **str);
+void		push_x_y_z(double *data, char **str);
+void		push_normal_x_y_z(double *data, char **str);
 
 /*utils*/
-int		ft_strlen(char *str);
-void	ft_strcopy(char *s, char *tmp);
-void	ft_strcopy2(char *s, char *tmp);
-int		ft_strlen_2(char *str);
-void	*ft_calloc(size_t nmemb, size_t size);
-void	check_format(char *argv, char *format);
-int	open_data(char *argv);
-int	div_str(char *str, char *div);
-void	print_error(char *str);
-double	check_range(double res, double min, double max, char *msg);
-void	null_check(char *str);
-int		check_bump_word(char *str);
-void	axis_x(double *result);
-void	axis_y(double *result);
-void	axis_z(double *result);
+int			ft_strlen(char *str);
+void		ft_strcopy(char *s, char *tmp);
+void		ft_strcopy2(char *s, char *tmp);
+int			ft_strlen_2(char *str);
+void		*ft_calloc(size_t nmemb, size_t size);
+void		check_format(char *argv, char *format);
+int			open_data(char *argv);
+int			div_str(char *str, char *div);
+void		print_error(char *str);
+double		check_range(double res, double min, double max, char *msg);
+void		null_check(char *str);
+int			check_bump_word(char *str);
+void		axis_x(double *result);
+void		axis_y(double *result);
+void		axis_z(double *result);
 
 /*math*/
-double	pow_2(double a);
-double	deg_to_rad(double degree);
-double	equation_d(double a, double b, double c);
-double	find_f(double a, double b, double c, double flag);
+double		pow_2(double a);
+double		deg_to_rad(double degree);
+double		equation_d(double a, double b, double c);
+double		find_f(double a, double b, double c, double flag);
 
-double	inner_product(double *u, double *w);
-void	cross_product(double *u, double *w, double *result);
-double	vector_size(double *x);
-void	normalize_vector(double *vec);
-void	vector_copy(double *x, double *copy);
-void	vector_n(double *x, double val, double *result);
-void	vector_plus(double *x, double *y, double *result);
-void	vector_minus(double *x, double *y, double *result);
-void	hex_to_rgb(int hex, unsigned int *rgb);
-void	hex_to_rgb_double(int hex, double *rgb);
+double		inner_product(double *u, double *w);
+void		cross_product(double *u, double *w, double *result);
+double		vector_size(double *x);
+void		normalize_vector(double *vec);
+void		vector_copy(double *x, double *copy);
+void		vector_n(double *x, double val, double *result);
+void		vector_plus(double *x, double *y, double *result);
+void		vector_minus(double *x, double *y, double *result);
+void		hex_to_rgb(int hex, unsigned int *rgb);
+void		hex_to_rgb_double(int hex, double *rgb);
 
 /*rotate*/
 
-void	copy_rot_l(t_mlx *mlx);
-void	copy_rot_sp(t_mlx *mlx);
-void	copy_rot_pl(t_mlx *mlx);
-void	copy_rot_cy(t_mlx *mlx);
-void	copy_rot_cn(t_mlx *mlx);
-void	updata_rot_l(t_data *data, t_mdata mdata);
-void	updata_rot_sp(t_data *data, t_mdata mdata);
-void	updata_rot_pl(t_data *data, t_mdata mdata);
-void	updata_rot_cy(t_data *data, t_mdata mdata);
-void	updata_rot_cn(t_data *data, t_mdata mdata);
-t_mdata	data_cam_num_init(t_mlx mlx);
-void	trans_rot_data(double x[3], t_mdata mdata);
-int		rot_data_check(t_cam cam);
-void	exec_rot_data(t_mlx *mlx, t_mdata mdata);
-void	copy_rot_data(t_mlx *mlx);
-
-
+void		copy_rot_l(t_mlx *mlx);
+void		copy_rot_sp(t_mlx *mlx);
+void		copy_rot_pl(t_mlx *mlx);
+void		copy_rot_cy(t_mlx *mlx);
+void		copy_rot_cn(t_mlx *mlx);
+void		updata_rot_l(t_data *data, t_mdata mdata);
+void		updata_rot_sp(t_data *data, t_mdata mdata);
+void		updata_rot_pl(t_data *data, t_mdata mdata);
+void		updata_rot_cy(t_data *data, t_mdata mdata);
+void		updata_rot_cn(t_data *data, t_mdata mdata);
+t_mdata		data_cam_num_init(t_mlx mlx);
+void		trans_rot_data(double x[3], t_mdata mdata);
+int			rot_data_check(t_cam cam);
+void		exec_rot_data(t_mlx *mlx, t_mdata mdata);
+void		copy_rot_data(t_mlx *mlx);
 
 /*uv*/
-void	uv_axis_sp(double *d, t_mlx *mlx);
-void	uv_axis_cn(t_mlx *mlx, double *d);
-void	uv_axis_cy(t_mlx *mlx, double *d);
-void	uv_axis_pl(double *d, t_mlx *mlx);
-void	normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj);
+void		uv_axis_sp(double *d, t_mlx *mlx);
+void		uv_axis_cn(t_mlx *mlx, double *d);
+void		uv_axis_cy(t_mlx *mlx, double *d);
+void		uv_axis_pl(double *d, t_mlx *mlx);
+void		normal_vector_bump(t_mlx *mlx, int i, int j, t_obj obj);
 
 /*hit*/
-
-void	check_hit_cy(t_mlx *mlx, double *d, int i, int j);
-int		check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx);
-void	check_hit_cn(t_mlx *mlx, double *d, int i, int j);
-void	find_cone_head(double *n, double h, double *c, double *result);
-int		check_hit_cn_d(double *d, double *n, double *c, t_mlx *mlx);
-void	check_hit_sp(t_mlx *mlx, double *d, int i, int j);
-void	check_hit_pl(t_mlx *mlx, double *d, int i, int j);
-void	color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj);
-void	canvas_match(t_mlx *mlx);
+void		check_hit_cy(t_mlx *mlx, double *d, int i, int j);
+int			check_hit_cy_d(double *d, double *n, double *c, t_mlx *mlx);
+void		check_hit_cn(t_mlx *mlx, double *d, int i, int j);
+void		find_cone_head(double *n, double h, double *c, double *result);
+int			check_hit_cn_d(double *d, double *n, double *c, t_mlx *mlx);
+void		check_hit_sp(t_mlx *mlx, double *d, int i, int j);
+void		check_hit_pl(t_mlx *mlx, double *d, int i, int j);
+void		color_select(t_mlx *mlx, unsigned int *rgb, t_obj obj);
+void		canvas_match(t_mlx *mlx);
 
 /*ray_tracer*/
-void	phong_init(t_mlx *mlx);
-void	phong_reset(unsigned int phong[3][3]);
-void	reset_phong_light(unsigned int phong[3][3]);
-int	apply_color(unsigned int *rgb);
-void	ambient_light(t_mlx *mlx, int i, int j, unsigned int *amb);
-void	diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff);
-void	specular_light(t_mlx *mlx, int i, int j, unsigned int *spec);
-int	check_hit_gray_sp(t_mlx *mlx, int i, int j);
-int	check_hit_gray_pl(t_mlx *mlx, int i, int j);
-int	check_hit_gray_cy(t_mlx *mlx, int i, int j);
-int	check_hit_gray_cn(t_mlx *mlx, int i, int j);
+void		phong_init(t_mlx *mlx);
+void		phong_reset(unsigned int phong[3][3]);
+void		reset_phong_light(unsigned int phong[3][3]);
+int			apply_color(unsigned int *rgb);
+void		ambient_light(t_mlx *mlx, int i, int j, unsigned int *amb);
+void		diffuse_light(t_mlx *mlx, int i, int j, unsigned int *diff);
+void		specular_light(t_mlx *mlx, int i, int j, unsigned int *spec);
+int			check_hit_gray_sp(t_mlx *mlx, int i, int j);
+int			check_hit_gray_pl(t_mlx *mlx, int i, int j);
+int			check_hit_gray_cy(t_mlx *mlx, int i, int j);
+int			check_hit_gray_cn(t_mlx *mlx, int i, int j);
 
 #endif
